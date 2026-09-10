@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+import dj_database_url
 
 
 # ==========================================
@@ -25,7 +26,7 @@ SECRET_KEY = os.getenv(
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 
 # ==========================================
@@ -36,10 +37,24 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "192.168.0.105",
-
-    # Current Cloudflare Quick Tunnel
-    "subsidiary-jets-wise-durable.trycloudflare.com",
+    "testserver",
 ]
+
+# Railway public domain
+railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+
+if railway_domain:
+    ALLOWED_HOSTS.append(railway_domain)
+
+# Optional custom hosts
+extra_allowed_hosts = os.getenv("ALLOWED_HOSTS", "")
+
+if extra_allowed_hosts:
+    ALLOWED_HOSTS.extend(
+        host.strip()
+        for host in extra_allowed_hosts.split(",")
+        if host.strip()
+    )
 
 
 # ==========================================
@@ -49,6 +64,23 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://subsidiary-jets-wise-durable.trycloudflare.com",
 ]
+
+if railway_domain:
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{railway_domain}"
+    )
+
+extra_csrf_origins = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    ""
+)
+
+if extra_csrf_origins:
+    CSRF_TRUSTED_ORIGINS.extend(
+        origin.strip()
+        for origin in extra_csrf_origins.split(",")
+        if origin.strip()
+    )
 
 
 # ==========================================
@@ -80,6 +112,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 
     "django.middleware.security.SecurityMiddleware",
+
+    # WhiteNoise for production static files
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
 
@@ -143,15 +178,30 @@ WSGI_APPLICATION = "bookmyshow.wsgi.application"
 # DATABASE
 # ==========================================
 
-DATABASES = {
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-    "default": {
+if DATABASE_URL:
 
-        "ENGINE": "django.db.backends.sqlite3",
-
-        "NAME": BASE_DIR / "db.sqlite3",
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+
+else:
+
+    # Local development database
+    DATABASES = {
+
+        "default": {
+
+            "ENGINE": "django.db.backends.sqlite3",
+
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # ==========================================
@@ -183,6 +233,24 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
+# WhiteNoise compressed static files
+STORAGES = {
+
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+
+    "staticfiles": {
+        "BACKEND": (
+            "whitenoise.storage."
+            "CompressedManifestStaticFilesStorage"
+        ),
+    },
+}
 
 
 # ==========================================
@@ -245,13 +313,14 @@ RAZORPAY_KEY_SECRET = os.getenv(
 # CELERY + REDIS
 # ==========================================
 
-CELERY_BROKER_URL = (
+REDIS_URL = os.getenv(
+    "REDIS_URL",
     "redis://127.0.0.1:6379/0"
 )
 
-CELERY_RESULT_BACKEND = (
-    "redis://127.0.0.1:6379/0"
-)
+CELERY_BROKER_URL = REDIS_URL
+
+CELERY_RESULT_BACKEND = REDIS_URL
 
 CELERY_ACCEPT_CONTENT = [
     "json"
