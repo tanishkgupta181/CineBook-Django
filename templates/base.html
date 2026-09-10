@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -6,7 +7,11 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
         {% block title %}
@@ -14,9 +19,13 @@
         {% endblock %}
     </title>
 
+    <!--
+        Version query forces browsers to load the latest CSS.
+        Useful after mobile responsive CSS updates.
+    -->
     <link
         rel="stylesheet"
-        href="{% static 'css/style.css' %}"
+        href="{% static 'css/style.css' %}?v=2"
     >
 
 </head>
@@ -73,7 +82,7 @@
             <form
                 method="post"
                 action="{% url 'logout' %}"
-                style="display:inline;"
+                style="display: inline;"
             >
 
                 {% csrf_token %}
@@ -89,7 +98,6 @@
 
 
         {% else %}
-
 
             <!-- LOGIN -->
 
@@ -109,7 +117,6 @@
             >
                 📝 Register
             </a>
-
 
         {% endif %}
 
@@ -166,3 +173,4 @@
 </body>
 
 </html>
+
