@@ -1,0 +1,145 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}Edit Review - CineBook{% endblock %}
+
+{% block content %}
+
+<div style="
+    max-width: 750px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #111;
+    border-radius: 15px;
+">
+
+    <div style="margin-bottom: 25px;">
+        <a href="{% url 'movie_detail' movie.id %}">
+            ← Back to Movie
+        </a>
+    </div>
+
+    <h1>
+        ✏️ Edit Your Review
+    </h1>
+
+    <h2 style="margin-top: 10px;">
+        {{ movie.title }}
+    </h2>
+
+    <form method="POST" style="margin-top: 30px;">
+
+        {% csrf_token %}
+
+        <!-- Rating -->
+
+        <label>
+            <strong>Your Rating</strong>
+        </label>
+
+        <select
+            name="rating"
+            required
+            style="
+                display: block;
+                width: 100%;
+                max-width: 350px;
+                padding: 12px;
+                margin-top: 8px;
+                border-radius: 8px;
+            "
+        >
+
+            <option value="1"
+                {% if review.rating == 1 %}selected{% endif %}>
+                ⭐ 1 - Poor
+            </option>
+
+            <option value="2"
+                {% if review.rating == 2 %}selected{% endif %}>
+                ⭐⭐ 2 - Fair
+            </option>
+
+            <option value="3"
+                {% if review.rating == 3 %}selected{% endif %}>
+                ⭐⭐⭐ 3 - Good
+            </option>
+
+            <option value="4"
+                {% if review.rating == 4 %}selected{% endif %}>
+                ⭐⭐⭐⭐ 4 - Very Good
+            </option>
+
+            <option value="5"
+                {% if review.rating == 5 %}selected{% endif %}>
+                ⭐⭐⭐⭐⭐ 5 - Excellent
+            </option>
+
+        </select>
+
+        <!-- Review -->
+
+        <label style="
+            display: block;
+            margin-top: 20px;
+        ">
+            <strong>Your Review</strong>
+        </label>
+
+        <textarea
+            name="review_text"
+            rows="7"
+            required
+            placeholder="Write your review..."
+            style="
+                display: block;
+                width: 100%;
+                padding: 14px;
+                margin-top: 8px;
+                border-radius: 8px;
+                resize: vertical;
+                box-sizing: border-box;
+            "
+        >{{ review.review_text }}</textarea>
+
+        <!-- Buttons -->
+
+        <div style="
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        ">
+
+            <button
+                type="submit"
+                style="
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                "
+            >
+                Update Review
+            </button>
+
+            <a
+                href="{% url 'movie_detail' movie.id %}"
+                style="
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                "
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+```

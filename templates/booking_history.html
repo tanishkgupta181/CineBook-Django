@@ -1,0 +1,884 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Bookings - CineBook
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .booking-history-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 18px;
+    }
+
+    .page-title {
+        margin-bottom: 8px;
+        font-size: 32px;
+    }
+
+    .section-title {
+        margin-top: 35px;
+        margin-bottom: 18px;
+    }
+
+    /* ==============================
+       BOOKING / PAYMENT CARD
+       ============================== */
+
+    .booking-card,
+    .payment-card {
+
+        border: 1px solid rgba(255, 255, 255, 0.10);
+
+        border-radius: 14px;
+
+        padding: 22px;
+
+        margin: 20px 0;
+
+        background: rgba(18, 18, 18, 0.92);
+
+        box-shadow:
+            0 6px 20px rgba(0, 0, 0, 0.25);
+
+        transition: 0.2s ease;
+    }
+
+    .booking-card:hover,
+    .payment-card:hover {
+
+        border-color:
+            rgba(255, 255, 255, 0.18);
+
+        transform:
+            translateY(-1px);
+    }
+
+    .booking-card h2,
+    .payment-card h2 {
+
+        margin-top: 0;
+
+        margin-bottom: 18px;
+
+        font-size: 22px;
+    }
+
+    .booking-card p,
+    .payment-card p {
+
+        margin: 9px 0;
+
+        line-height: 1.5;
+    }
+
+    .booking-card strong,
+    .payment-card strong {
+
+        color: #ddd;
+    }
+
+
+    /* ==============================
+       BUTTON AREA
+       ============================== */
+
+    .button-area {
+
+        margin-top: 22px;
+
+        padding-top: 18px;
+
+        border-top:
+            1px solid rgba(255, 255, 255, 0.08);
+
+        display: flex;
+
+        gap: 12px;
+
+        flex-wrap: wrap;
+    }
+
+
+    /* ==============================
+       BUTTONS
+       ============================== */
+
+    .ticket-button,
+    .retry-button {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 11px 18px;
+
+        border-radius: 8px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+
+        text-decoration: none;
+
+        transition: 0.2s ease;
+    }
+
+
+    /* DOWNLOAD PDF */
+
+    .ticket-button {
+
+        background: #e50914;
+
+        color: white;
+
+        border: 1px solid #e50914;
+
+        box-shadow:
+            0 4px 12px rgba(229, 9, 20, 0.20);
+    }
+
+    .ticket-button:hover {
+
+        background: #b20710;
+
+        border-color: #b20710;
+
+        color: white;
+
+        transform:
+            translateY(-1px);
+
+        box-shadow:
+            0 6px 16px rgba(229, 9, 20, 0.30);
+    }
+
+
+    /* RETRY PAYMENT */
+
+    .retry-button {
+
+        background: transparent;
+
+        color: #ffb000;
+
+        border:
+            1px solid #ffb000;
+    }
+
+    .retry-button:hover {
+
+        background: #ffb000;
+
+        color: #111;
+
+        transform:
+            translateY(-1px);
+
+        box-shadow:
+            0 5px 15px rgba(255, 176, 0, 0.20);
+    }
+
+
+    .button-icon {
+
+        font-size: 16px;
+
+        line-height: 1;
+    }
+
+
+    /* ==============================
+       PAYMENT STATUS
+       ============================== */
+
+    .payment-status {
+
+        display: inline-block;
+
+        padding: 5px 10px;
+
+        border-radius: 6px;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        background:
+            rgba(255, 255, 255, 0.08);
+    }
+
+
+    /* ==============================
+       PAYMENT SECTION
+       ============================== */
+
+    .payment-section {
+
+        margin-top: 45px;
+
+        border-top:
+            1px solid rgba(255, 255, 255, 0.10);
+
+        padding-top: 30px;
+    }
+
+
+    /* ==============================
+       EMPTY BOOKINGS
+       ============================== */
+
+    .empty-bookings {
+
+        padding: 35px;
+
+        text-align: center;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.10);
+
+        border-radius: 14px;
+
+        background:
+            rgba(18, 18, 18, 0.92);
+    }
+
+
+    .browse-button {
+
+        display: inline-block;
+
+        margin-top: 12px;
+
+        padding: 10px 18px;
+
+        border-radius: 8px;
+
+        background: #e50914;
+
+        color: white;
+
+        text-decoration: none;
+
+        font-weight: 600;
+    }
+
+    .browse-button:hover {
+
+        background: #b20710;
+
+        color: white;
+    }
+
+
+    /* ==============================
+       MOBILE
+       ============================== */
+
+    @media (max-width: 600px) {
+
+        .booking-history-container {
+
+            margin: 25px auto;
+
+            padding: 0 12px;
+        }
+
+        .page-title {
+
+            font-size: 26px;
+        }
+
+        .booking-card,
+        .payment-card {
+
+            padding: 18px;
+        }
+
+        .ticket-button,
+        .retry-button {
+
+            width: 100%;
+
+            box-sizing: border-box;
+        }
+    }
+
+</style>
+
+
+<div class="booking-history-container">
+
+    <h1 class="page-title">
+        🎫 My Booking History
+    </h1>
+
+
+    <!-- ==============================
+         CONFIRMED BOOKINGS
+         ============================== -->
+
+    {% if bookings %}
+
+        <h2 class="section-title">
+            Confirmed Bookings
+        </h2>
+
+
+        {% for booking in bookings %}
+
+        <div class="booking-card">
+
+            <h2>
+                {{ booking.show.movie.title }}
+            </h2>
+
+
+            <p>
+                <strong>Booking ID:</strong>
+                {{ booking.booking_id }}
+            </p>
+
+
+            <p>
+                <strong>Theater:</strong>
+
+                {% if booking.show.theater %}
+                    {{ booking.show.theater.name }}
+                {% else %}
+                    {{ booking.show.theatre }}
+                {% endif %}
+            </p>
+
+
+            <p>
+                <strong>Screen:</strong>
+                {{ booking.screen }}
+            </p>
+
+
+            <p>
+                <strong>Date:</strong>
+                {{ booking.show.show_date }}
+            </p>
+
+
+            <p>
+                <strong>Time:</strong>
+                {{ booking.show.show_time }}
+            </p>
+
+
+            <p>
+                <strong>Seats:</strong>
+                {{ booking.seat_numbers }}
+            </p>
+
+
+            <p>
+                <strong>Payment Reference:</strong>
+                {{ booking.payment_reference }}
+            </p>
+
+
+            <p>
+                <strong>Total Amount:</strong>
+                ₹{{ booking.total_amount }}
+            </p>
+
+
+            <p>
+                <strong>Booked At:</strong>
+                {{ booking.booked_at }}
+            </p>
+
+
+            <!-- DOWNLOAD TICKET -->
+
+            <div class="button-area">
+
+                {% if booking.ticket_file %}
+
+                    <a
+                        href="{% url 'download_ticket' booking.booking_id %}"
+                        class="ticket-button"
+                    >
+
+                        <span class="button-icon">
+                            📥
+                        </span>
+
+                        <span>
+                            Download PDF Ticket
+                        </span>
+
+                    </a>
+
+                {% else %}
+
+                    <span style="
+                        color:#999;
+                        font-size:14px;
+                    ">
+                        ⏳ Ticket is being generated...
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <div class="empty-bookings">
+
+            <h2>
+                No confirmed bookings yet.
+            </h2>
+
+            <a
+                href="{% url 'home' %}"
+                class="browse-button"
+            >
+                🎬 Browse Movies
+            </a>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ==============================
+         PAYMENT ATTEMPTS
+         ============================== -->
+
+    {% if payment_transactions %}
+
+        <div class="payment-section">
+
+            <h2 class="section-title">
+                💳 Payment Attempts
+            </h2>
+
+
+            {% for payment in payment_transactions %}
+
+            <div class="payment-card">
+
+                <h2>
+                    {{ payment.show.movie.title }}
+                </h2>
+
+
+                <p>
+                    <strong>Transaction ID:</strong>
+                    {{ payment.id }}
+                </p>
+
+
+                <p>
+                    <strong>Seats:</strong>
+                    {{ payment.seat_numbers }}
+                </p>
+
+
+                <p>
+                    <strong>Amount:</strong>
+                    ₹{{ payment.amount }}
+                </p>
+
+
+                <p>
+                    <strong>Status:</strong>
+
+                    <span class="payment-status">
+                        {{ payment.status|title }}
+                    </span>
+                </p>
+
+
+                {% if payment.failure_reason %}
+
+                <p>
+                    <strong>Reason:</strong>
+                    {{ payment.failure_reason }}
+                </p>
+
+                {% endif %}
+
+
+                <!-- RETRY PAYMENT -->
+
+                {% if payment.status == "failed" or payment.status == "cancelled" %}
+
+                    <div class="button-area">
+
+                        <button
+                            type="button"
+                            class="retry-button"
+                            onclick="retryPayment('{{ payment.id }}')"
+                        >
+
+                            <span class="button-icon">
+                                🔄
+                            </span>
+
+                            <span>
+                                Retry Payment
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- ==============================
+     RAZORPAY
+     ============================== -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<script>
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (
+        document.cookie &&
+        document.cookie !== ""
+    ) {
+
+        const cookies =
+            document.cookie.split(";");
+
+
+        for (
+            let cookie of cookies
+        ) {
+
+            cookie =
+                cookie.trim();
+
+
+            if (
+                cookie.startsWith(
+                    name + "="
+                )
+            ) {
+
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
+
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+
+/* ==============================
+   RETRY PAYMENT
+   ============================== */
+
+function retryPayment(transactionId) {
+
+    fetch(
+        `/payment/retry/${transactionId}/`,
+        {
+
+            method: "POST",
+
+            headers: {
+
+                "X-CSRFToken":
+                    getCookie("csrftoken"),
+
+                "Content-Type":
+                    "application/json"
+            }
+
+        }
+    )
+
+    .then(
+        response =>
+            response.json()
+    )
+
+    .then(
+        data => {
+
+            if (!data.success) {
+
+                alert(
+                    data.error ||
+                    "Unable to retry payment."
+                );
+
+                return;
+            }
+
+
+            const options = {
+
+                key:
+                    data.key,
+
+                amount:
+                    data.amount,
+
+                currency:
+                    data.currency,
+
+                name:
+                    "CineBook",
+
+                description:
+                    "Retry Payment",
+
+                order_id:
+                    data.order_id,
+
+
+                handler:
+                    function(response) {
+
+                        fetch(
+                            "{% url 'verify_razorpay_payment' %}",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+
+                                    "X-CSRFToken":
+                                        getCookie(
+                                            "csrftoken"
+                                        ),
+
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+
+                                        razorpay_payment_id:
+                                            response.razorpay_payment_id,
+
+                                        razorpay_order_id:
+                                            response.razorpay_order_id,
+
+                                        razorpay_signature:
+                                            response.razorpay_signature
+
+                                    })
+                            }
+                        )
+
+                        .then(
+                            response =>
+                                response.json()
+                        )
+
+                        .then(
+                            result => {
+
+                                if (
+                                    result.success
+                                ) {
+
+                                    window.location.href =
+                                        result.redirect_url;
+
+                                } else {
+
+                                    alert(
+                                        result.error ||
+                                        "Payment verification failed."
+                                    );
+
+                                }
+
+                            }
+                        )
+
+                        .catch(
+                            error => {
+
+                                console.error(
+                                    error
+                                );
+
+                                alert(
+                                    "Payment verification failed."
+                                );
+
+                            }
+                        );
+
+                    },
+
+
+                modal: {
+
+                    ondismiss:
+                        function() {
+
+                            fetch(
+                                "{% url 'payment_cancelled' %}",
+                                {
+
+                                    method: "POST",
+
+                                    headers: {
+
+                                        "X-CSRFToken":
+                                            getCookie(
+                                                "csrftoken"
+                                            ),
+
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+
+                                            razorpay_order_id:
+                                                data.order_id,
+
+                                            reason:
+                                                "Retry payment cancelled by user."
+
+                                        })
+                                }
+                            );
+
+                        }
+
+                }
+
+            };
+
+
+            options.prefill = {
+
+                name:
+                    data.customer_name || "",
+
+                email:
+                    data.customer_email || "",
+
+                contact:
+                    data.customer_phone || ""
+
+            };
+
+
+            const razorpay =
+                new Razorpay(
+                    options
+                );
+
+
+            razorpay.on(
+                "payment.failed",
+                function(response) {
+
+                    fetch(
+                        "{% url 'payment_failed' %}",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "X-CSRFToken":
+                                    getCookie(
+                                        "csrftoken"
+                                    ),
+
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    razorpay_order_id:
+                                        data.order_id,
+
+                                    reason:
+                                        response.error &&
+                                        response.error.description
+                                            ? response.error.description
+                                            : "Payment failed."
+
+                                })
+                        }
+                    );
+
+                }
+            );
+
+
+            razorpay.open();
+
+        }
+    )
+
+    .catch(
+        error => {
+
+            console.error(
+                error
+            );
+
+            alert(
+                "Something went wrong while retrying payment."
+            );
+
+        }
+    );
+
+}
+
+</script>
+
+
+{% endblock %}

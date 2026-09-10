@@ -1,0 +1,168 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        CineBook
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="navbar">
+
+    <!-- LOGO -->
+
+    <a
+        class="logo"
+        href="{% url 'home' %}"
+    >
+        🎬 CineBook
+    </a>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="nav-links">
+
+        {% if user.is_authenticated %}
+
+            <!-- HOME -->
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+
+            <!-- USER -->
+
+            <span class="welcome">
+                👋 Hi, {{ user.username }}
+            </span>
+
+
+            <!-- BOOKING HISTORY -->
+
+            <a href="{% url 'booking_history' %}">
+                🎟️ Booking History
+            </a>
+
+
+            <!-- LOGOUT -->
+
+            <form
+                method="post"
+                action="{% url 'logout' %}"
+                style="display:inline;"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-btn"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+
+        {% else %}
+
+
+            <!-- LOGIN -->
+
+            <a
+                href="{% url 'login' %}"
+                class="login-link"
+            >
+                🔐 Login
+            </a>
+
+
+            <!-- REGISTER -->
+
+            <a
+                href="{% url 'register' %}"
+                class="register-link"
+            >
+                📝 Register
+            </a>
+
+
+        {% endif %}
+
+    </nav>
+
+</header>
+
+
+<!-- =====================================================
+     MESSAGES
+===================================================== -->
+
+{% if messages %}
+
+<div class="messages">
+
+    {% for message in messages %}
+
+        <div class="message">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main>
+
+    {% block content %}
+
+    {% endblock %}
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    © 2026 CineBook · Django Movie Booking System
+
+</footer>
+
+
+</body>
+
+</html>

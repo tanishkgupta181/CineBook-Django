@@ -1,0 +1,1586 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ movie.title }} - CineBook{% endblock %}
+
+{% block content %}
+
+<div class="movie-detail-page">
+
+```
+<!-- ===================================================== -->
+<!-- BACK -->
+<!-- ===================================================== -->
+
+<div class="detail-back">
+    <a href="{% url 'home' %}">
+        ← Back to Movies
+    </a>
+</div>
+
+
+<!-- ===================================================== -->
+<!-- MOVIE DETAILS -->
+<!-- ===================================================== -->
+
+<section class="movie-detail-card">
+
+    <!-- POSTER -->
+
+    <div
+        class="detail-poster-box"
+        style="
+            width:300px;
+            min-height:450px;
+            display:block;
+            flex-shrink:0;
+        "
+    >
+
+        {% if movie.poster_url %}
+
+        <img
+            src="{{ movie.poster_url }}"
+            alt="{{ movie.title }}"
+            class="detail-poster"
+            loading="lazy"
+            style="
+                display:block;
+                width:300px;
+                height:450px;
+                object-fit:cover;
+                border-radius:12px;
+            "
+        >
+
+        {% else %}
+
+        <div
+            style="
+                width:300px;
+                height:450px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:#222;
+                color:white;
+                border-radius:12px;
+                text-align:center;
+                padding:20px;
+                box-sizing:border-box;
+            "
+        >
+            🎬<br>
+            Poster Not Available
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- INFORMATION -->
+
+    <div class="detail-information">
+
+        <div class="detail-rating">
+            ⭐ {{ average_rating }}/5
+
+            <span style="opacity:.7;">
+                • {{ movie.rating }}/10
+            </span>
+        </div>
+
+
+        <h1>
+            {{ movie.title }}
+        </h1>
+
+
+        <div class="detail-meta">
+
+            {% if movie.genre %}
+                <span>🎭 {{ movie.genre }}</span>
+            {% endif %}
+
+            {% if movie.language %}
+                <span>🌐 {{ movie.language }}</span>
+            {% endif %}
+
+            {% if movie.duration %}
+                <span>⏱️ {{ movie.duration }}</span>
+            {% endif %}
+
+            {% if movie.age_certification %}
+                <span>🔖 {{ movie.age_certification }}</span>
+            {% endif %}
+
+            {% if movie.release_date %}
+                <span>📅 {{ movie.release_date }}</span>
+            {% endif %}
+
+        </div>
+
+
+        {% if movie.description %}
+
+        <div class="movie-description">
+
+            <h3>
+                About the Movie
+            </h3>
+
+            <p>
+                {{ movie.description }}
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="movie-info-list">
+
+            <div>
+                <strong>Movie</strong>
+                <span>{{ movie.title }}</span>
+            </div>
+
+            {% if movie.genre %}
+            <div>
+                <strong>Genre</strong>
+                <span>{{ movie.genre }}</span>
+            </div>
+            {% endif %}
+
+            {% if movie.language %}
+            <div>
+                <strong>Language</strong>
+                <span>{{ movie.language }}</span>
+            </div>
+            {% endif %}
+
+            {% if movie.duration %}
+            <div>
+                <strong>Duration</strong>
+                <span>{{ movie.duration }}</span>
+            </div>
+            {% endif %}
+
+            {% if movie.age_certification %}
+            <div>
+                <strong>Certification</strong>
+                <span>{{ movie.age_certification }}</span>
+            </div>
+            {% endif %}
+
+            {% if movie.release_date %}
+            <div>
+                <strong>Release Date</strong>
+                <span>{{ movie.release_date }}</span>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- TRAILER -->
+<!-- ===================================================== -->
+
+{% if youtube_embed_url %}
+
+<section
+    style="
+        margin-top:30px;
+        padding:25px;
+        background:#111;
+        border-radius:15px;
+    "
+>
+
+    <h2>
+        ▶️ Movie Trailer
+    </h2>
+
+    <div
+        style="
+            position:relative;
+            width:100%;
+            max-width:900px;
+            margin:20px auto 0;
+            aspect-ratio:16/9;
+            overflow:hidden;
+            border-radius:12px;
+            background:#000;
+        "
+    >
+
+        <iframe
+            src="{{ youtube_embed_url }}"
+            title="{{ movie.title }} Trailer"
+            width="100%"
+            height="100%"
+            style="
+                border:0;
+                position:absolute;
+                inset:0;
+            "
+            allow="
+                accelerometer;
+                autoplay;
+                clipboard-write;
+                encrypted-media;
+                gyroscope;
+                picture-in-picture;
+                web-share
+            "
+            allowfullscreen
+            loading="lazy"
+        ></iframe>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- ===================================================== -->
+<!-- MORE POSTERS -->
+<!-- ===================================================== -->
+
+{% if posters %}
+
+<section style="margin-top:30px;">
+
+    <h2>
+        🖼️ More Posters
+    </h2>
+
+    <div
+        style="
+            display:flex;
+            gap:15px;
+            overflow-x:auto;
+            padding:15px 0;
+        "
+    >
+
+        {% for poster in posters %}
+
+        <img
+            src="{{ poster.image_url }}"
+            alt="{{ poster.title|default:movie.title }}"
+            loading="lazy"
+            style="
+                width:180px;
+                height:270px;
+                object-fit:cover;
+                border-radius:10px;
+                flex-shrink:0;
+            "
+        >
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- ===================================================== -->
+<!-- CAST -->
+<!-- ===================================================== -->
+
+{% if cast_members %}
+
+<section style="margin-top:30px;">
+
+    <h2>
+        👥 Cast
+    </h2>
+
+    <div
+        style="
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+            margin-top:15px;
+        "
+    >
+
+        {% for cast in cast_members %}
+
+        <div
+            style="
+                width:150px;
+                padding:15px;
+                background:#151515;
+                border-radius:12px;
+                text-align:center;
+                box-sizing:border-box;
+            "
+        >
+
+            {% if cast.photo_url %}
+
+            <img
+                src="{{ cast.photo_url }}"
+                alt="{{ cast.name }}"
+                loading="lazy"
+                style="
+                    width:100px;
+                    height:100px;
+                    border-radius:50%;
+                    object-fit:cover;
+                "
+            >
+
+            {% else %}
+
+            <div
+                style="
+                    width:100px;
+                    height:100px;
+                    border-radius:50%;
+                    background:#292929;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    margin:auto;
+                    font-size:35px;
+                "
+            >
+                👤
+            </div>
+
+            {% endif %}
+
+            <h4>
+                {{ cast.name }}
+            </h4>
+
+            {% if cast.role %}
+
+            <p style="opacity:.7;">
+                {{ cast.role }}
+            </p>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- ===================================================== -->
+<!-- RATINGS & REVIEWS -->
+<!-- ===================================================== -->
+
+<section
+    style="
+        margin-top:35px;
+        padding:25px;
+        background:#111;
+        border-radius:15px;
+    "
+>
+
+    <h2>
+        ⭐ Ratings & Reviews
+    </h2>
+
+
+    <div
+        style="
+            margin-top:15px;
+            font-size:22px;
+        "
+    >
+
+        ⭐
+
+        <strong>
+            {{ average_rating }}/5
+        </strong>
+
+        <span style="opacity:.7;">
+            ({{ reviews|length }} reviews)
+        </span>
+
+    </div>
+
+
+    <!-- REVIEW FORM -->
+
+    {% if has_watched %}
+
+    <div
+        style="
+            margin-top:25px;
+            padding:20px;
+            background:#1b1b1b;
+            border-radius:12px;
+        "
+    >
+
+        <h3>
+            ⭐ Rate & Review This Movie
+        </h3>
+
+        <p style="opacity:.75;">
+            You have watched this movie. Share your experience!
+        </p>
+
+        <form
+            method="POST"
+            action="{% url 'submit_review' movie.id %}"
+            style="margin-top:15px;"
+        >
+
+            {% csrf_token %}
+
+            <label>
+                <strong>Your Rating</strong>
+            </label>
+
+            <select
+                name="rating"
+                required
+                style="
+                    display:block;
+                    width:100%;
+                    max-width:300px;
+                    padding:10px;
+                    margin-top:8px;
+                    border-radius:8px;
+                "
+            >
+
+                <option value="">
+                    Select Rating
+                </option>
+
+                <option value="1">
+                    ⭐ 1 - Poor
+                </option>
+
+                <option value="2">
+                    ⭐⭐ 2 - Fair
+                </option>
+
+                <option value="3">
+                    ⭐⭐⭐ 3 - Good
+                </option>
+
+                <option value="4">
+                    ⭐⭐⭐⭐ 4 - Very Good
+                </option>
+
+                <option value="5">
+                    ⭐⭐⭐⭐⭐ 5 - Excellent
+                </option>
+
+            </select>
+
+
+            <label
+                style="
+                    display:block;
+                    margin-top:15px;
+                "
+            >
+                <strong>Your Review</strong>
+            </label>
+
+
+            <textarea
+                name="review_text"
+                rows="5"
+                required
+                placeholder="Write your review..."
+                style="
+                    width:100%;
+                    max-width:700px;
+                    padding:12px;
+                    margin-top:8px;
+                    border-radius:8px;
+                    resize:vertical;
+                    box-sizing:border-box;
+                "
+            ></textarea>
+
+
+            <button
+                type="submit"
+                style="
+                    display:block;
+                    margin-top:15px;
+                    padding:12px 22px;
+                    border:0;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-weight:bold;
+                "
+            >
+                Submit Review
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% else %}
+
+    <div
+        style="
+            margin-top:25px;
+            padding:18px;
+            background:#1b1b1b;
+            border-radius:10px;
+        "
+    >
+
+        <p style="margin:0;">
+            🎟️ <strong>Want to review this movie?</strong>
+        </p>
+
+        <p style="opacity:.7;margin-bottom:0;">
+            Book and watch a show of this movie first.
+            After the show has ended, you can submit your rating and review.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- EXISTING REVIEWS -->
+
+    {% if reviews %}
+
+    <div style="margin-top:30px;">
+
+        {% for review in reviews %}
+
+        <div
+            style="
+                padding:18px;
+                margin-bottom:15px;
+                background:#1b1b1b;
+                border-radius:10px;
+            "
+        >
+
+            <div>
+
+                <strong>
+                    {{ review.user.get_full_name|default:review.user.username }}
+                </strong>
+
+                {% if review.is_verified_viewer %}
+
+                <span
+                    style="
+                        margin-left:8px;
+                        padding:4px 8px;
+                        border-radius:15px;
+                        background:#19a463;
+                        color:white;
+                        font-size:12px;
+                    "
+                >
+                    ✓ Verified Viewer
+                </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div style="margin-top:8px;">
+                ⭐ {{ review.rating }}/5
+            </div>
+
+
+            <p style="margin-top:10px;">
+                {{ review.review_text }}
+            </p>
+
+
+            <small style="opacity:.6;">
+
+                {{ review.created_at|date:"d M Y" }}
+
+                {% if review.updated_at != review.created_at %}
+                    • Edited
+                {% endif %}
+
+            </small>
+
+
+            {% if review.user == request.user %}
+
+            <div style="margin-top:12px;">
+
+                <a
+                    href="{% url 'edit_review' review.id %}"
+                    style="
+                        display:inline-block;
+                        padding:8px 14px;
+                        background:#333;
+                        color:white;
+                        border-radius:7px;
+                        text-decoration:none;
+                    "
+                >
+                    ✏️ Edit Review
+                </a>
+
+            </div>
+
+            {% else %}
+
+            <details style="margin-top:12px;">
+
+                <summary style="cursor:pointer;">
+                    🚩 Report Review
+                </summary>
+
+                <form
+                    method="POST"
+                    action="{% url 'report_review' review.id %}"
+                    style="margin-top:12px;"
+                >
+
+                    {% csrf_token %}
+
+                    <select
+                        name="reason"
+                        required
+                        style="
+                            padding:8px;
+                            border-radius:6px;
+                        "
+                    >
+
+                        <option value="spam">
+                            Spam
+                        </option>
+
+                        <option value="offensive">
+                            Offensive Content
+                        </option>
+
+                        <option value="inappropriate">
+                            Inappropriate Content
+                        </option>
+
+                        <option value="false">
+                            False Information
+                        </option>
+
+                        <option value="other">
+                            Other
+                        </option>
+
+                    </select>
+
+
+                    <textarea
+                        name="description"
+                        rows="3"
+                        placeholder="Optional details..."
+                        style="
+                            display:block;
+                            width:100%;
+                            max-width:500px;
+                            margin-top:8px;
+                            padding:8px;
+                            box-sizing:border-box;
+                        "
+                    ></textarea>
+
+
+                    <button
+                        type="submit"
+                        style="
+                            margin-top:8px;
+                            padding:8px 15px;
+                            cursor:pointer;
+                        "
+                    >
+                        Submit Report
+                    </button>
+
+                </form>
+
+            </details>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <p style="margin-top:25px;">
+        No reviews yet.
+    </p>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- BOOK TICKET / AVAILABLE SHOWS -->
+<!-- ===================================================== -->
+
+<section class="booking-section">
+
+    <div class="booking-header">
+
+        <div class="booking-icon">
+            🎟️
+        </div>
+
+        <div>
+            <h2>
+                Book Tickets
+            </h2>
+
+            <p>
+                Choose your date, theater and show time
+                for <strong>{{ movie.title }}</strong>.
+            </p>
+        </div>
+
+    </div>
+
+
+    {% if shows %}
+
+        <!-- GROUP BY DATE -->
+
+        {% regroup shows by show_date as date_groups %}
+
+        {% for date_group in date_groups %}
+
+        <div class="date-block">
+
+            <!-- DATE HEADER -->
+
+            <div class="date-header">
+
+                <div class="calendar-box">
+                    📅
+                </div>
+
+                <div>
+
+                    <h3>
+                        {{ date_group.grouper|date:"l, d M Y" }}
+                    </h3>
+
+                    <span class="date-subtitle">
+                        Select a theater below
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- GROUP BY THEATER -->
+
+            {% regroup date_group.list by theater as theater_groups %}
+
+            {% for theater_group in theater_groups %}
+
+            <div class="theater-card">
+
+                <!-- THEATER INFORMATION -->
+
+                <div class="theater-header">
+
+                    <div class="theater-icon">
+                        🏢
+                    </div>
+
+                    <div class="theater-details">
+
+                        <h3>
+                            {% if theater_group.grouper %}
+                                {{ theater_group.grouper.name }}
+                            {% else %}
+                                CineBook Cinema
+                            {% endif %}
+                        </h3>
+
+                        <p>
+                            {% if theater_group.grouper %}
+                                📍 {{ theater_group.grouper.city }}
+                            {% else %}
+                                📍 Cinema Hall
+                            {% endif %}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SHOW TIMES -->
+
+                <div class="show-time-area">
+
+                    <div class="show-time-title">
+                        🕐 Available Show Times
+                    </div>
+
+
+                    {% regroup theater_group.list by show_time as time_groups %}
+
+                    <div class="show-time-grid">
+
+                        {% for time_group in time_groups %}
+
+                            {% with show=time_group.list.0 %}
+
+                            <a
+                                href="{% url 'book_ticket' show.id %}"
+                                class="show-card"
+                            >
+
+                                <div class="show-card-time">
+                                    {{ time_group.grouper|time:"h:i A" }}
+                                </div>
+
+                                <div class="show-card-price">
+                                    ₹{{ show.ticket_price }}
+                                </div>
+
+                                <div class="show-card-button">
+                                    Book Now →
+                                </div>
+
+                            </a>
+
+                            {% endwith %}
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+    <!-- NO SHOWS -->
+
+    <div class="no-shows">
+
+        <div class="no-show-icon">
+            🎬
+        </div>
+
+        <h3>
+            No Shows Available
+        </h3>
+
+        <p>
+            There are currently no upcoming shows for
+            <strong>{{ movie.title }}</strong>.
+        </p>
+
+        <a
+            href="{% url 'home' %}"
+            class="back-movies"
+        >
+            ← Browse Other Movies
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- SIMILAR MOVIES -->
+<!-- ===================================================== -->
+
+{% if similar_movies %}
+
+<section
+    style="
+        margin-top:35px;
+        padding:25px;
+        background:#111;
+        border-radius:15px;
+    "
+>
+
+    <h2>
+        🎬 Similar Movies
+    </h2>
+
+    <p style="opacity:.7;">
+        Movies you may also like
+    </p>
+
+    <div
+        style="
+            display:flex;
+            gap:18px;
+            overflow-x:auto;
+            padding:15px 0;
+        "
+    >
+
+        {% for similar in similar_movies %}
+
+        <div
+            style="
+                min-width:180px;
+                max-width:180px;
+                flex-shrink:0;
+            "
+        >
+
+            <a
+                href="{% url 'movie_detail' similar.id %}"
+                style="
+                    text-decoration:none;
+                    color:inherit;
+                "
+            >
+
+                {% if similar.poster_url %}
+
+                <img
+                    src="{{ similar.poster_url }}"
+                    alt="{{ similar.title }}"
+                    loading="lazy"
+                    style="
+                        display:block;
+                        width:180px;
+                        height:270px;
+                        object-fit:cover;
+                        border-radius:10px;
+                    "
+                >
+
+                {% else %}
+
+                <div
+                    style="
+                        width:180px;
+                        height:270px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        background:#222;
+                        border-radius:10px;
+                    "
+                >
+                    🎬
+                </div>
+
+                {% endif %}
+
+
+                <h3>
+                    {{ similar.title }}
+                </h3>
+
+                <p>
+                    ⭐ {{ similar.rating }}/10
+                </p>
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% else %}
+
+<section
+    style="
+        margin-top:35px;
+        padding:25px;
+        background:#111;
+        border-radius:15px;
+    "
+>
+
+    <h2>
+        🎬 Similar Movies
+    </h2>
+
+    <p>
+        No similar movies available.
+    </p>
+
+</section>
+
+{% endif %}
+
+
+<!-- ===================================================== -->
+<!-- TRENDING MOVIES -->
+<!-- ===================================================== -->
+
+{% if trending_movies %}
+
+<section
+    style="
+        margin-top:35px;
+        padding:25px;
+        background:#111;
+        border-radius:15px;
+    "
+>
+
+    <h2>
+        🔥 Trending Movies
+    </h2>
+
+    <div
+        style="
+            display:flex;
+            gap:18px;
+            overflow-x:auto;
+            padding:15px 0;
+        "
+    >
+
+        {% for trending in trending_movies %}
+
+        <div
+            style="
+                min-width:180px;
+                max-width:180px;
+                flex-shrink:0;
+            "
+        >
+
+            <a
+                href="{% url 'movie_detail' trending.id %}"
+                style="
+                    text-decoration:none;
+                    color:inherit;
+                "
+            >
+
+                {% if trending.poster_url %}
+
+                <img
+                    src="{{ trending.poster_url }}"
+                    alt="{{ trending.title }}"
+                    loading="lazy"
+                    style="
+                        display:block;
+                        width:180px;
+                        height:270px;
+                        object-fit:cover;
+                        border-radius:10px;
+                    "
+                >
+
+                {% endif %}
+
+
+                <h3>
+                    {{ trending.title }}
+                </h3>
+
+                <p>
+                    ⭐ {{ trending.rating }}/10
+                </p>
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- ===================================================== -->
+<!-- RECENTLY RELEASED -->
+<!-- ===================================================== -->
+
+{% if recently_released %}
+
+<section
+    style="
+        margin-top:35px;
+        padding:25px;
+        background:#111;
+        border-radius:15px;
+    "
+>
+
+    <h2>
+        🆕 Recently Released
+    </h2>
+
+    <div
+        style="
+            display:flex;
+            gap:18px;
+            overflow-x:auto;
+            padding:15px 0;
+        "
+    >
+
+        {% for recent in recently_released %}
+
+        <div
+            style="
+                min-width:180px;
+                max-width:180px;
+                flex-shrink:0;
+            "
+        >
+
+            <a
+                href="{% url 'movie_detail' recent.id %}"
+                style="
+                    text-decoration:none;
+                    color:inherit;
+                "
+            >
+
+                {% if recent.poster_url %}
+
+                <img
+                    src="{{ recent.poster_url }}"
+                    alt="{{ recent.title }}"
+                    loading="lazy"
+                    style="
+                        display:block;
+                        width:180px;
+                        height:270px;
+                        object-fit:cover;
+                        border-radius:10px;
+                    "
+                >
+
+                {% endif %}
+
+
+                <h3>
+                    {{ recent.title }}
+                </h3>
+
+                <p>
+                    📅 {{ recent.release_date }}
+                </p>
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+```
+
+</div>
+
+<!-- ========================================================= -->
+
+<!-- BOOKING SECTION CSS -->
+
+<!-- ========================================================= -->
+
+<style>
+
+.movie-detail-page {
+    width:100%;
+    box-sizing:border-box;
+}
+
+
+/* ========================================================= */
+/* BOOKING */
+/* ========================================================= */
+
+.booking-section {
+    margin-top:28px;
+    padding:28px;
+    background:linear-gradient(135deg,#171717,#0d0d0d);
+    border:1px solid rgba(229,9,20,.35);
+    border-radius:16px;
+    box-shadow:0 8px 25px rgba(0,0,0,.25);
+}
+
+
+.booking-header {
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:28px;
+    text-align:left;
+}
+
+
+.booking-icon {
+    width:58px;
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e50914;
+    border-radius:14px;
+    font-size:28px;
+    flex-shrink:0;
+}
+
+
+.booking-header h2 {
+    margin:0;
+    font-size:27px;
+}
+
+
+.booking-header p {
+    margin:6px 0 0;
+    opacity:.7;
+    font-size:14px;
+}
+
+
+/* ========================================================= */
+/* DATE */
+/* ========================================================= */
+
+.date-block {
+    margin-top:22px;
+}
+
+
+.date-header {
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    background:#222;
+    border-radius:12px;
+    border:1px solid #333;
+}
+
+
+.calendar-box {
+    width:45px;
+    height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e50914;
+    border-radius:10px;
+    font-size:22px;
+}
+
+
+.date-header h3 {
+    margin:0;
+    font-size:18px;
+}
+
+
+.date-subtitle {
+    display:block;
+    margin-top:4px;
+    font-size:12px;
+    opacity:.6;
+}
+
+
+/* ========================================================= */
+/* THEATER */
+/* ========================================================= */
+
+.theater-card {
+    margin-bottom:16px;
+    padding:20px;
+    background:#141414;
+    border:1px solid #303030;
+    border-radius:14px;
+}
+
+
+.theater-header {
+    display:flex;
+    align-items:center;
+    gap:13px;
+    margin-bottom:20px;
+}
+
+
+.theater-icon {
+    width:45px;
+    height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#242424;
+    border-radius:10px;
+    font-size:21px;
+}
+
+
+.theater-details h3 {
+    margin:0;
+    font-size:17px;
+}
+
+
+.theater-details p {
+    margin:4px 0 0;
+    font-size:13px;
+    opacity:.6;
+}
+
+
+/* ========================================================= */
+/* SHOW TIMES */
+/* ========================================================= */
+
+.show-time-area {
+    border-top:1px solid #292929;
+    padding-top:17px;
+}
+
+
+.show-time-title {
+    margin-bottom:12px;
+    font-size:13px;
+    opacity:.7;
+    font-weight:600;
+}
+
+
+.show-time-grid {
+    display:flex;
+    flex-wrap:wrap;
+    gap:11px;
+}
+
+
+.show-card {
+    display:block;
+    min-width:145px;
+    padding:13px 15px;
+    background:#1b1b1b;
+    border:1px solid #444;
+    border-radius:10px;
+    color:white;
+    text-decoration:none;
+    transition:all .2s ease;
+    box-sizing:border-box;
+}
+
+
+.show-card:hover {
+    border-color:#e50914;
+    background:#241414;
+    transform:translateY(-3px);
+    box-shadow:0 6px 16px rgba(229,9,20,.18);
+}
+
+
+.show-card-time {
+    font-size:16px;
+    font-weight:700;
+}
+
+
+.show-card-price {
+    margin-top:5px;
+    font-size:13px;
+    opacity:.65;
+}
+
+
+.show-card-button {
+    margin-top:9px;
+    color:#ff4b55;
+    font-size:13px;
+    font-weight:700;
+}
+
+
+/* ========================================================= */
+/* NO SHOWS */
+/* ========================================================= */
+
+.no-shows {
+    text-align:center;
+    padding:45px 20px;
+    margin-top:10px;
+    background:#151515;
+    border:1px dashed #444;
+    border-radius:13px;
+}
+
+
+.no-show-icon {
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+
+.no-shows h3 {
+    margin:5px 0;
+    font-size:21px;
+}
+
+
+.no-shows p {
+    margin:8px 0 20px;
+    opacity:.65;
+}
+
+
+.back-movies {
+    display:inline-block;
+    padding:10px 18px;
+    background:#e50914;
+    color:white;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+}
+
+
+.back-movies:hover {
+    background:#ff1a25;
+}
+
+
+/* ========================================================= */
+/* RESPONSIVE */
+/* ========================================================= */
+
+@media (max-width:700px) {
+
+    .movie-detail-card {
+        flex-direction:column !important;
+    }
+
+
+    .detail-poster-box {
+        width:100% !important;
+        max-width:300px;
+        margin:auto;
+    }
+
+
+    .detail-poster-box img {
+        width:100% !important;
+        height:auto !important;
+    }
+
+
+    .booking-section {
+        padding:20px 14px;
+        margin-top:22px;
+    }
+
+
+    .booking-header {
+        align-items:flex-start;
+    }
+
+
+    .booking-header h2 {
+        font-size:23px;
+    }
+
+
+    .booking-icon {
+        width:48px;
+        height:48px;
+        font-size:23px;
+    }
+
+
+    .theater-card {
+        padding:15px;
+    }
+
+
+    .show-time-grid {
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:9px;
+    }
+
+
+    .show-card {
+        min-width:0;
+        padding:12px;
+    }
+
+
+    .show-card-time {
+        font-size:14px;
+    }
+
+
+    .date-header {
+        padding:13px;
+    }
+
+}
+
+</style>
+
+{% endblock %}

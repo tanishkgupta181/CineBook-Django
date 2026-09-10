@@ -1,0 +1,2010 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Book Ticket - CineBook
+{% endblock %}
+
+{% block content %}
+
+<div style="
+    max-width:1000px;
+    margin:40px auto;
+    padding:25px;
+">
+
+    <h1 style="margin-bottom:25px;">
+        🎬 Book Movie Ticket
+    </h1>
+
+    <!-- MOVIE DETAILS -->
+    <div style="
+        padding:25px;
+        border:1px solid #ddd;
+        border-radius:15px;
+        margin-bottom:25px;
+    ">
+
+        <h2>{{ show.movie.title }}</h2>
+
+        <p>
+            <strong>Genre:</strong>
+            {{ show.movie.genre }}
+        </p>
+
+        <p>
+            <strong>Language:</strong>
+            {{ show.movie.language }}
+        </p>
+
+        <p>
+            <strong>Theater:</strong>
+            {{ show.theater.name }}
+        </p>
+
+        <p>
+            <strong>Location:</strong>
+            📍 {{ show.theater.city }}
+        </p>
+
+        <p>
+            <strong>Date:</strong>
+            📅 <span id="currentDate"></span>
+        </p>
+
+        <p>
+            <strong>Time:</strong>
+            🕐 {{ show.show_time }}
+        </p>
+
+        <p>
+            <strong>Ticket Price:</strong>
+            ₹<span id="ticketPrice">{{ show.ticket_price }}</span>
+        </p>
+
+        <p>
+            <strong>Available Seats:</strong>
+
+            <span id="availableSeats">
+                {{ show.seats }}
+            </span>
+        </p>
+
+    </div>
+
+
+    <!-- LIVE RESERVATION STATUS -->
+    <div
+        id="reservationStatus"
+        style="
+            display:none;
+            padding:18px;
+            margin-bottom:25px;
+            border-radius:12px;
+            text-align:center;
+            font-weight:bold;
+            background:#fff3cd;
+            color:#856404;
+        "
+    ></div>
+
+
+    <!-- BOOKING FORM -->
+    <form method="POST" id="bookingForm">
+
+        {% csrf_token %}
+
+
+        <!-- CUSTOMER DETAILS -->
+        <div style="
+            padding:25px;
+            border:1px solid #ddd;
+            border-radius:15px;
+            margin-bottom:25px;
+        ">
+
+            <h2>👤 Customer Details</h2>
+
+
+            <label>
+                <strong>Customer Name</strong>
+            </label>
+
+            <input
+                type="text"
+                name="customer_name"
+                value="{{ request.user.get_full_name }}"
+                required
+                style="
+                    width:100%;
+                    padding:12px;
+                    margin:8px 0 18px;
+                    box-sizing:border-box;
+                "
+            >
+
+
+            <label>
+                <strong>Email</strong>
+            </label>
+
+            <input
+                type="email"
+                name="email"
+                value="{{ request.user.email }}"
+                required
+                style="
+                    width:100%;
+                    padding:12px;
+                    margin:8px 0 18px;
+                    box-sizing:border-box;
+                "
+            >
+
+
+            <label>
+                <strong>Phone</strong>
+            </label>
+
+            <input
+                type="text"
+                name="phone"
+                placeholder="Enter phone number"
+                required
+                style="
+                    width:100%;
+                    padding:12px;
+                    margin:8px 0 18px;
+                    box-sizing:border-box;
+                "
+            >
+
+
+            <label>
+                <strong>Screen</strong>
+            </label>
+
+            <select
+                name="screen"
+                style="
+                    width:100%;
+                    padding:12px;
+                    margin:8px 0 18px;
+                "
+            >
+                <option value="Screen 1">
+                    Screen 1
+                </option>
+
+                <option value="Screen 2">
+                    Screen 2
+                </option>
+
+                <option value="Screen 3">
+                    Screen 3
+                </option>
+            </select>
+
+        </div>
+
+
+        <!-- SEAT SELECTION -->
+        <div style="
+            padding:25px;
+            border:1px solid #ddd;
+            border-radius:15px;
+            margin-bottom:25px;
+        ">
+
+            <h2>💺 Select Your Seats</h2>
+
+            <p>
+                Available seat par click karke select karein.
+            </p>
+
+            <p style="
+                color:#666;
+                font-size:14px;
+            ">
+                Seat availability automatically refresh hoti rahegi.
+            </p>
+
+
+            <!-- LEGEND -->
+            <div style="
+                display:flex;
+                gap:20px;
+                flex-wrap:wrap;
+                margin:20px 0;
+                font-size:15px;
+            ">
+
+                <span>
+                    🟢 Available
+                </span>
+
+                <span>
+                    🟠 Reserved
+                </span>
+
+                <span>
+                    🔴 Booked
+                </span>
+
+                <span>
+                    🔵 Selected
+                </span>
+
+            </div>
+
+
+            <!-- SCREEN -->
+            <div style="
+                text-align:center;
+                margin:30px 0;
+            ">
+
+                <div style="
+                    display:inline-block;
+                    width:80%;
+                    padding:14px;
+                    background:#222;
+                    color:white;
+                    border-radius:8px;
+                    font-weight:bold;
+                ">
+                    🎥 SCREEN
+                </div>
+
+            </div>
+
+
+            <!-- SEATS -->
+            <div style="
+                max-width:700px;
+                margin:auto;
+                overflow-x:auto;
+            ">
+
+                {% for row in "ABCDEFGHIJ" %}
+
+                <div
+                    class="seat-row"
+                    data-row="{{ row }}"
+                    style="
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        gap:8px;
+                        margin:10px 0;
+                        min-width:550px;
+                    "
+                >
+
+                    <strong style="
+                        width:30px;
+                        text-align:center;
+                    ">
+                        {{ row }}
+                    </strong>
+
+
+                    {% for number in "1234567890" %}
+
+                    {% with seat=row|add:number %}
+
+                    <button
+                        type="button"
+                        class="seat-button"
+                        data-seat="{{ seat }}"
+                        style="
+                            width:42px;
+                            height:40px;
+                            border:0;
+                            border-radius:7px;
+                            background:#5cb85c;
+                            color:white;
+                            cursor:pointer;
+                            font-weight:bold;
+                        "
+                    >
+                        {{ number }}
+                    </button>
+
+                    {% endwith %}
+
+                    {% endfor %}
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- SELECTED SEATS -->
+            <div style="
+                margin-top:30px;
+                padding:18px;
+                border-radius:10px;
+                background:#f5f5f5;
+            ">
+
+                <strong>
+                    Selected Seats:
+                </strong>
+
+                <span id="selectedSeats">
+                    None
+                </span>
+
+            </div>
+
+
+            <!-- TOTAL -->
+            <div style="
+                margin-top:20px;
+                font-size:22px;
+                font-weight:bold;
+            ">
+
+                Total Amount:
+                ₹<span id="totalAmount">0</span>
+
+            </div>
+
+
+            <input
+                type="hidden"
+                name="seat_numbers"
+                id="seatNumbers"
+            >
+
+        </div>
+
+
+        <!-- RESERVATION TIMER -->
+        <div
+            id="reservationTimerBox"
+            style="
+                display:none;
+                margin-bottom:20px;
+                padding:20px;
+                border-radius:12px;
+                background:#e7f3ff;
+                border:1px solid #b8daff;
+                text-align:center;
+            "
+        >
+
+            <div style="
+                font-size:16px;
+                margin-bottom:8px;
+            ">
+                ⏱️ Your seats are temporarily reserved
+            </div>
+
+            <div
+                id="reservationTimer"
+                style="
+                    font-size:30px;
+                    font-weight:bold;
+                "
+            >
+                02:00
+            </div>
+
+            <div style="
+                margin-top:8px;
+                font-size:13px;
+                color:#555;
+            ">
+                Payment complete karein before reservation expires.
+            </div>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+        <div
+            id="paymentMessage"
+            style="
+                display:none;
+                margin-bottom:20px;
+                padding:15px;
+                border-radius:8px;
+                text-align:center;
+                font-weight:bold;
+            "
+        ></div>
+
+
+        <!-- PAY BUTTON -->
+        <div style="text-align:center;">
+
+            <button
+                type="submit"
+                id="payButton"
+                style="
+                    padding:15px 40px;
+                    border:0;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-size:18px;
+                    font-weight:bold;
+                    background:#3399cc;
+                    color:white;
+                "
+            >
+                💳 Pay ₹<span id="buttonAmount">0</span>
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- RAZORPAY -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<script>
+
+/* ==========================================
+   CURRENT DATE
+   ========================================== */
+
+const today = new Date();
+
+const dateOptions = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+};
+
+document.getElementById("currentDate").textContent =
+    today.toLocaleDateString("en-GB", dateOptions);
+
+
+/* ==========================================
+   ELEMENTS
+   ========================================== */
+
+const bookingForm =
+    document.getElementById("bookingForm");
+
+const seatButtons =
+    document.querySelectorAll(".seat-button");
+
+const seatInput =
+    document.getElementById("seatNumbers");
+
+const selectedSeatsDisplay =
+    document.getElementById("selectedSeats");
+
+const totalAmountDisplay =
+    document.getElementById("totalAmount");
+
+const buttonAmount =
+    document.getElementById("buttonAmount");
+
+const paymentMessage =
+    document.getElementById("paymentMessage");
+
+const payButton =
+    document.getElementById("payButton");
+
+const ticketPrice =
+    Number(
+        document
+            .getElementById("ticketPrice")
+            .textContent
+            .trim()
+    );
+
+const availableSeatsDisplay =
+    document.getElementById("availableSeats");
+
+const reservationStatus =
+    document.getElementById("reservationStatus");
+
+const reservationTimerBox =
+    document.getElementById("reservationTimerBox");
+
+const reservationTimer =
+    document.getElementById("reservationTimer");
+
+
+/* ==========================================
+   STATE
+   ========================================== */
+
+let selectedSeats = [];
+
+let bookedSeats = [];
+
+let reservedSeats = [];
+
+let myReservedSeats = [];
+
+let totalSeats = Number("{{ show.seats }}");
+
+let currentOrderId = null;
+
+let reservationExpiresAt = null;
+
+let countdownInterval = null;
+
+let availabilityInterval = null;
+
+let paymentStarted = false;
+
+let paymentEventHandled = false;
+
+
+/* ==========================================
+   CSRF
+   ========================================== */
+
+const csrfToken =
+    bookingForm.querySelector(
+        '[name="csrfmiddlewaretoken"]'
+    ).value;
+
+
+/* ==========================================
+   LIVE AVAILABILITY URL
+   ========================================== */
+
+const availabilityUrl =
+    "{% url 'live_seat_availability' show.id %}";
+
+
+/* ==========================================
+   CREATE ALL SEAT BUTTONS MAP
+   ========================================== */
+
+const seatButtonMap = {};
+
+seatButtons.forEach(function(button) {
+
+    seatButtonMap[
+        button.dataset.seat
+    ] = button;
+
+});
+
+
+/* ==========================================
+   SHOW MESSAGE
+   ========================================== */
+
+function showMessage(message, success = false) {
+
+    paymentMessage.style.display = "block";
+
+    paymentMessage.textContent = message;
+
+    if (success) {
+
+        paymentMessage.style.background =
+            "#d4edda";
+
+        paymentMessage.style.color =
+            "#155724";
+
+    }
+
+    else {
+
+        paymentMessage.style.background =
+            "#f8d7da";
+
+        paymentMessage.style.color =
+            "#721c24";
+
+    }
+
+}
+
+
+/* ==========================================
+   SHOW RESERVATION STATUS
+   ========================================== */
+
+function showReservationStatus(message) {
+
+    reservationStatus.style.display = "block";
+
+    reservationStatus.textContent =
+        message;
+
+}
+
+
+/* ==========================================
+   HIDE RESERVATION STATUS
+   ========================================== */
+
+function hideReservationStatus() {
+
+    reservationStatus.style.display =
+        "none";
+
+}
+
+
+/* ==========================================
+   UPDATE SELECTED SEATS DISPLAY
+   ========================================== */
+
+function updateSelectedSeats() {
+
+    selectedSeats.sort(function(a, b) {
+
+        return a.localeCompare(
+            b,
+            undefined,
+            {
+                numeric: true
+            }
+        );
+
+    });
+
+
+    seatInput.value =
+        selectedSeats.join(", ");
+
+
+    selectedSeatsDisplay.textContent =
+        selectedSeats.length
+            ? selectedSeats.join(", ")
+            : "None";
+
+
+    const total =
+        selectedSeats.length *
+        ticketPrice;
+
+
+    totalAmountDisplay.textContent =
+        total;
+
+
+    buttonAmount.textContent =
+        total;
+
+
+    if (!paymentStarted) {
+
+        payButton.innerHTML =
+            "💳 Pay ₹" + total;
+
+    }
+
+}
+
+
+/* ==========================================
+   SET SEAT STYLE
+   ========================================== */
+
+function setSeatStyle(
+    button,
+    status,
+    selected = false
+) {
+
+    if (!button) {
+        return;
+    }
+
+
+    button.disabled = false;
+
+    button.style.cursor =
+        "pointer";
+
+
+    if (status === "booked") {
+
+        button.disabled = true;
+
+        button.style.background =
+            "#d9534f";
+
+        button.style.cursor =
+            "not-allowed";
+
+        button.title =
+            "Booked";
+
+        return;
+
+    }
+
+
+    if (status === "reserved") {
+
+        button.disabled = true;
+
+        button.style.background =
+            "#f0ad4e";
+
+        button.style.cursor =
+            "not-allowed";
+
+        button.title =
+            "Temporarily reserved";
+
+        return;
+
+    }
+
+
+    if (selected) {
+
+        button.style.background =
+            "#337ab7";
+
+        button.style.color =
+            "white";
+
+        button.title =
+            "Selected - click to remove";
+
+        return;
+
+    }
+
+
+    button.style.background =
+        "#5cb85c";
+
+    button.style.color =
+        "white";
+
+    button.title =
+        "Available - click to select";
+
+}
+
+
+/* ==========================================
+   APPLY LIVE SEAT STATUS
+   ========================================== */
+
+function applySeatStatus(data) {
+
+    bookedSeats =
+        data.booked_seats || [];
+
+    reservedSeats =
+        data.reserved_seats || [];
+
+    myReservedSeats =
+        data.my_reserved_seats || [];
+
+
+    totalSeats =
+        Number(
+            data.total_seats ||
+            "{{ show.seats }}"
+        );
+
+
+    availableSeatsDisplay.textContent =
+        data.available_count;
+
+
+    seatButtons.forEach(function(button) {
+
+        const seat =
+            button.dataset.seat;
+
+
+        const seatNumber =
+            parseInt(
+                seat.substring(1),
+                10
+            );
+
+
+        /*
+         * Hide seats that are outside
+         * this show's total capacity.
+         */
+        if (seatNumber > totalSeats) {
+
+            button.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        button.style.display =
+            "inline-block";
+
+
+        /*
+         * BOOKED
+         */
+        if (bookedSeats.includes(seat)) {
+
+            /*
+             * If currently selected seat
+             * became booked, remove it.
+             */
+            if (selectedSeats.includes(seat)) {
+
+                selectedSeats =
+                    selectedSeats.filter(
+                        function(item) {
+                            return item !== seat;
+                        }
+                    );
+
+                showMessage(
+                    "Seat " +
+                    seat +
+                    " abhi kisi aur user ne book kar li hai."
+                );
+
+                updateSelectedSeats();
+
+            }
+
+
+            setSeatStyle(
+                button,
+                "booked",
+                false
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * RESERVED
+         */
+        if (reservedSeats.includes(seat)) {
+
+            if (selectedSeats.includes(seat)) {
+
+                selectedSeats =
+                    selectedSeats.filter(
+                        function(item) {
+                            return item !== seat;
+                        }
+                    );
+
+                showMessage(
+                    "Seat " +
+                    seat +
+                    " temporarily reserved hai."
+                );
+
+                updateSelectedSeats();
+
+            }
+
+
+            setSeatStyle(
+                button,
+                "reserved",
+                false
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * AVAILABLE
+         */
+        setSeatStyle(
+            button,
+            "available",
+            selectedSeats.includes(seat)
+        );
+
+    });
+
+}
+
+
+/* ==========================================
+   LIVE SEAT AVAILABILITY
+   ========================================== */
+
+async function refreshSeatAvailability() {
+
+    /*
+     * Don't refresh seat selection while
+     * Razorpay checkout is active.
+     */
+    if (paymentStarted) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                availabilityUrl,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "X-Requested-With":
+                            "XMLHttpRequest"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Unable to load seat availability."
+            );
+
+        }
+
+
+        applySeatStatus(data);
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Live seat availability error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   INITIAL LIVE AVAILABILITY
+   ========================================== */
+
+refreshSeatAvailability();
+
+
+/* ==========================================
+   REFRESH EVERY 5 SECONDS
+   ========================================== */
+
+availabilityInterval =
+    setInterval(
+        refreshSeatAvailability,
+        5000
+    );
+
+
+/* ==========================================
+   SEAT SELECTION
+   ========================================== */
+
+seatButtons.forEach(function(button) {
+
+    button.addEventListener(
+        "click",
+        function() {
+
+            /*
+             * Don't allow changing selection
+             * after payment order has started.
+             */
+            if (paymentStarted) {
+
+                showMessage(
+                    "Payment process start ho chuka hai. Seats ab change nahi ki ja sakti."
+                );
+
+                return;
+
+            }
+
+
+            const seat =
+                this.dataset.seat;
+
+
+            /*
+             * Extra safety check
+             */
+            if (
+                bookedSeats.includes(seat) ||
+                reservedSeats.includes(seat)
+            ) {
+
+                showMessage(
+                    "Seat " +
+                    seat +
+                    " abhi available nahi hai."
+                );
+
+                refreshSeatAvailability();
+
+                return;
+
+            }
+
+
+            /*
+             * REMOVE SEAT
+             */
+            if (selectedSeats.includes(seat)) {
+
+                selectedSeats =
+                    selectedSeats.filter(
+                        function(item) {
+                            return item !== seat;
+                        }
+                    );
+
+            }
+
+            /*
+             * ADD SEAT
+             */
+            else {
+
+                selectedSeats.push(seat);
+
+            }
+
+
+            updateSelectedSeats();
+
+
+            /*
+             * Reapply styling
+             */
+            applySeatStatus({
+                booked_seats: bookedSeats,
+                reserved_seats: reservedSeats,
+                my_reserved_seats:
+                    myReservedSeats,
+                available_count:
+                    totalSeats -
+                    bookedSeats.length -
+                    reservedSeats.length,
+                total_seats:
+                    totalSeats
+            });
+
+        }
+    );
+
+});
+
+
+/* ==========================================
+   RESET PAYMENT BUTTON
+   ========================================== */
+
+function resetPayButton() {
+
+    paymentStarted = false;
+
+    payButton.disabled =
+        false;
+
+    payButton.style.cursor =
+        "pointer";
+
+    payButton.innerHTML =
+        "💳 Pay ₹" +
+        (
+            selectedSeats.length *
+            ticketPrice
+        );
+
+}
+
+
+/* ==========================================
+   START COUNTDOWN
+   ========================================== */
+
+function startReservationCountdown(
+    expiresAt
+) {
+
+    reservationExpiresAt =
+        new Date(expiresAt);
+
+
+    reservationTimerBox.style.display =
+        "block";
+
+
+    clearInterval(
+        countdownInterval
+    );
+
+
+    function updateCountdown() {
+
+        const now =
+            new Date();
+
+
+        const difference =
+            reservationExpiresAt.getTime() -
+            now.getTime();
+
+
+        if (difference <= 0) {
+
+            clearInterval(
+                countdownInterval
+            );
+
+
+            reservationTimer.textContent =
+                "00:00";
+
+
+            reservationTimerBox.style.background =
+                "#f8d7da";
+
+            reservationTimerBox.style.borderColor =
+                "#f5c6cb";
+
+
+            showReservationStatus(
+                "⏰ Aapki temporary seat reservation expire ho gayi hai. Please seats dobara select karein."
+            );
+
+
+            payButton.disabled =
+                true;
+
+            payButton.style.cursor =
+                "not-allowed";
+
+            payButton.textContent =
+                "⏰ Reservation Expired";
+
+
+            currentOrderId =
+                null;
+
+
+            paymentStarted =
+                false;
+
+
+            refreshSeatAvailability();
+
+            return;
+
+        }
+
+
+        const totalSeconds =
+            Math.floor(
+                difference / 1000
+            );
+
+
+        const minutes =
+            Math.floor(
+                totalSeconds / 60
+            );
+
+
+        const seconds =
+            totalSeconds % 60;
+
+
+        reservationTimer.textContent =
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(seconds).padStart(2, "0");
+
+
+        if (totalSeconds <= 30) {
+
+            reservationTimerBox.style.background =
+                "#fff3cd";
+
+            reservationTimerBox.style.borderColor =
+                "#ffeeba";
+
+        }
+
+    }
+
+
+    updateCountdown();
+
+
+    countdownInterval =
+        setInterval(
+            updateCountdown,
+            1000
+        );
+
+}
+
+
+/* ==========================================
+   MARK PAYMENT AS FAILED
+   ========================================== */
+
+async function markPaymentFailed(reason) {
+
+    if (!currentOrderId) {
+        return;
+    }
+
+
+    const data =
+        new FormData();
+
+
+    data.append(
+        "razorpay_order_id",
+        currentOrderId
+    );
+
+
+    data.append(
+        "reason",
+        reason ||
+        "Payment failed."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "{% url 'payment_failed' %}",
+                {
+                    method: "POST",
+
+                    body: data,
+
+                    headers: {
+                        "X-CSRFToken":
+                            csrfToken
+                    }
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Payment failed status:",
+            result
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Could not update failed transaction:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   MARK PAYMENT AS CANCELLED
+   ========================================== */
+
+async function markPaymentCancelled(reason) {
+
+    if (!currentOrderId) {
+        return;
+    }
+
+
+    const data =
+        new FormData();
+
+
+    data.append(
+        "razorpay_order_id",
+        currentOrderId
+    );
+
+
+    data.append(
+        "reason",
+        reason ||
+        "Payment cancelled by customer."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "{% url 'payment_cancelled' %}",
+                {
+                    method: "POST",
+
+                    body: data,
+
+                    headers: {
+                        "X-CSRFToken":
+                            csrfToken
+                    }
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Payment cancelled status:",
+            result
+        );
+
+
+        /*
+         * Refresh seats because
+         * cancelled reservation is released.
+         */
+        await refreshSeatAvailability();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Could not update cancelled transaction:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   PAYMENT SUBMIT
+   ========================================== */
+
+bookingForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        /* ================================
+           CHECK SEATS
+           ================================ */
+
+        if (selectedSeats.length === 0) {
+
+            showMessage(
+                "Please select at least one seat."
+            );
+
+            return;
+
+        }
+
+
+        /* ================================
+           RAZORPAY CHECK
+           ================================ */
+
+        if (
+            typeof Razorpay ===
+            "undefined"
+        ) {
+
+            showMessage(
+                "Razorpay load nahi hua. Internet connection check karein."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Recheck live availability
+         * immediately before payment.
+         */
+        await refreshSeatAvailability();
+
+
+        /*
+         * Check selected seats again
+         */
+        const unavailableSelected =
+            selectedSeats.filter(
+                function(seat) {
+
+                    return (
+                        bookedSeats.includes(seat) ||
+                        reservedSeats.includes(seat)
+                    );
+
+                }
+            );
+
+
+        if (
+            unavailableSelected.length > 0
+        ) {
+
+            showMessage(
+                "Ye seats ab available nahi hain: " +
+                unavailableSelected.join(", ")
+            );
+
+            return;
+
+        }
+
+
+        /* ================================
+           DISABLE PAYMENT BUTTON
+           ================================ */
+
+        paymentStarted =
+            true;
+
+        paymentEventHandled =
+            false;
+
+
+        payButton.disabled =
+            true;
+
+        payButton.style.cursor =
+            "not-allowed";
+
+        payButton.textContent =
+            "⏳ Creating Payment...";
+
+
+        const formData =
+            new FormData(
+                bookingForm
+            );
+
+
+        try {
+
+            /* ============================
+               CREATE ORDER
+               ============================ */
+
+            const orderResponse =
+                await fetch(
+                    "{% url 'create_razorpay_order' show.id %}",
+                    {
+                        method: "POST",
+
+                        body: formData,
+
+                        headers: {
+                            "X-CSRFToken":
+                                csrfToken
+                        }
+                    }
+                );
+
+
+            const orderData =
+                await orderResponse.json();
+
+
+            if (!orderResponse.ok) {
+
+                throw new Error(
+                    orderData.error ||
+                    "Unable to create payment order."
+                );
+
+            }
+
+
+            if (orderData.error) {
+
+                throw new Error(
+                    orderData.error
+                );
+
+            }
+
+
+            const razorpayKey =
+                orderData.key ||
+                orderData.key_id;
+
+
+            if (!razorpayKey) {
+
+                throw new Error(
+                    "Razorpay Key ID missing. Check .env and restart Django."
+                );
+
+            }
+
+
+            if (!orderData.order_id) {
+
+                throw new Error(
+                    "Razorpay Order ID missing."
+                );
+
+            }
+
+
+            /* ============================
+               SAVE ORDER
+               ============================ */
+
+            currentOrderId =
+                orderData.order_id;
+
+
+            /* ============================
+               START 2-MINUTE TIMER
+               ============================ */
+
+            if (
+                orderData.expires_at
+            ) {
+
+                startReservationCountdown(
+                    orderData.expires_at
+                );
+
+
+                showReservationStatus(
+                    "🔒 Seats temporarily reserved. Payment complete karein."
+                );
+
+            }
+
+
+            /* ============================
+               RAZORPAY OPTIONS
+               ============================ */
+
+            const razorpayOptions = {
+
+                key:
+                    razorpayKey,
+
+                amount:
+                    orderData.amount,
+
+                currency:
+                    orderData.currency ||
+                    "INR",
+
+                name:
+                    "CineBook",
+
+                description:
+                    orderData.description ||
+                    "CineBook Movie Ticket",
+
+                order_id:
+                    orderData.order_id,
+
+
+                prefill: {
+
+                    name:
+                        formData.get(
+                            "customer_name"
+                        ) || "",
+
+                    email:
+                        formData.get(
+                            "email"
+                        ) || "",
+
+                    contact:
+                        formData.get(
+                            "phone"
+                        ) || ""
+
+                },
+
+
+                theme: {
+
+                    color:
+                        "#3399cc"
+
+                },
+
+
+                /* ============================
+                   PAYMENT SUCCESS
+                   ============================ */
+
+                handler:
+                    async function(response) {
+
+                        paymentEventHandled =
+                            true;
+
+
+                        payButton.textContent =
+                            "⏳ Verifying Payment...";
+
+
+                        const verifyData =
+                            new FormData();
+
+
+                        verifyData.append(
+                            "razorpay_payment_id",
+                            response.razorpay_payment_id
+                        );
+
+
+                        verifyData.append(
+                            "razorpay_order_id",
+                            response.razorpay_order_id
+                        );
+
+
+                        verifyData.append(
+                            "razorpay_signature",
+                            response.razorpay_signature
+                        );
+
+
+                        try {
+
+                            const verifyResponse =
+                                await fetch(
+                                    "{% url 'verify_razorpay_payment' %}",
+                                    {
+                                        method: "POST",
+
+                                        body:
+                                            verifyData,
+
+                                        headers: {
+                                            "X-CSRFToken":
+                                                csrfToken
+                                        }
+                                    }
+                                );
+
+
+                            const result =
+                                await verifyResponse.json();
+
+
+                            if (
+                                !verifyResponse.ok ||
+                                !result.success
+                            ) {
+
+                                throw new Error(
+                                    result.error ||
+                                    "Payment verification failed."
+                                );
+
+                            }
+
+
+                            clearInterval(
+                                countdownInterval
+                            );
+
+
+                            clearInterval(
+                                availabilityInterval
+                            );
+
+
+                            showMessage(
+                                "✅ Payment successful! Booking confirmed.",
+                                true
+                            );
+
+
+                            if (
+                                result.redirect_url
+                            ) {
+
+                                window.location.href =
+                                    result.redirect_url;
+
+                            }
+
+                            else if (
+                                result.booking_id
+                            ) {
+
+                                window.location.href =
+                                    "/booking/success/" +
+                                    result.booking_id +
+                                    "/";
+
+                            }
+
+                            else {
+
+                                throw new Error(
+                                    "Booking created but ticket URL missing."
+                                );
+
+                            }
+
+                        }
+
+                        catch (error) {
+
+                            console.error(
+                                "Verification error:",
+                                error
+                            );
+
+
+                            showMessage(
+                                error.message ||
+                                "Payment verification failed."
+                            );
+
+
+                            resetPayButton();
+
+
+                            refreshSeatAvailability();
+
+                        }
+
+                    },
+
+
+                /* ============================
+                   CHECKOUT CLOSED
+                   ============================ */
+
+                modal: {
+
+                    ondismiss:
+                        async function() {
+
+                            /*
+                             * If payment.failed event
+                             * already handled it,
+                             * don't mark cancelled again.
+                             */
+                            if (
+                                paymentEventHandled
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            paymentEventHandled =
+                                true;
+
+
+                            await markPaymentCancelled(
+                                "Payment cancelled by customer."
+                            );
+
+
+                            clearInterval(
+                                countdownInterval
+                            );
+
+
+                            reservationTimerBox.style.display =
+                                "none";
+
+
+                            showMessage(
+                                "❌ Payment cancelled. Aap seats dobara select kar sakte hain."
+                            );
+
+
+                            currentOrderId =
+                                null;
+
+
+                            paymentStarted =
+                                false;
+
+
+                            resetPayButton();
+
+
+                            refreshSeatAvailability();
+
+                        }
+
+                }
+
+            };
+
+
+            /* ============================
+               CREATE RAZORPAY
+               ============================ */
+
+            const razorpay =
+                new Razorpay(
+                    razorpayOptions
+                );
+
+
+            /* ============================
+               PAYMENT FAILED EVENT
+               ============================ */
+
+            razorpay.on(
+                "payment.failed",
+                async function(response) {
+
+                    paymentEventHandled =
+                        true;
+
+
+                    console.error(
+                        "Payment failed:",
+                        response.error
+                    );
+
+
+                    let reason =
+                        "Payment failed.";
+
+
+                    if (
+                        response.error &&
+                        response.error.description
+                    ) {
+
+                        reason =
+                            response.error.description;
+
+                    }
+
+
+                    await markPaymentFailed(
+                        reason
+                    );
+
+
+                    clearInterval(
+                        countdownInterval
+                    );
+
+
+                    reservationTimerBox.style.display =
+                        "none";
+
+
+                    showMessage(
+                        "❌ Payment failed. Please try again."
+                    );
+
+
+                    currentOrderId =
+                        null;
+
+
+                    paymentStarted =
+                        false;
+
+
+                    resetPayButton();
+
+
+                    refreshSeatAvailability();
+
+                }
+            );
+
+
+            /* ============================
+               OPEN CHECKOUT
+               ============================ */
+
+            razorpay.open();
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Payment error:",
+                error
+            );
+
+
+            paymentStarted =
+                false;
+
+
+            showMessage(
+                error.message ||
+                "Something went wrong while creating payment."
+            );
+
+
+            resetPayButton();
+
+
+            /*
+             * Refresh seats because order
+             * creation may have failed.
+             */
+            refreshSeatAvailability();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   CLEANUP
+   ========================================== */
+
+window.addEventListener(
+    "beforeunload",
+    function() {
+
+        clearInterval(
+            countdownInterval
+        );
+
+        clearInterval(
+            availabilityInterval
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

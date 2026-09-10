@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}CineBook - Movies{% endblock %}
+
+{% block content %}
+
+<div class="cine-home">
+
+```
+<!-- HERO SECTION -->
+<section class="cine-hero">
+
+    <div class="hero-content">
+
+        <p class="hero-small">
+            🎬 WELCOME TO CINEBOOK
+        </p>
+
+        <h1>
+            Book Your Favourite
+            <span>Movies</span>
+        </h1>
+
+        <p class="hero-text">
+            Discover movies, choose your show and book your seats
+            easily.
+        </p>
+
+        <!-- SEARCH -->
+        <form
+            method="get"
+            action="{% url 'home' %}"
+            class="movie-search"
+        >
+
+            <input
+                type="text"
+                name="q"
+                value="{{ query|default:'' }}"
+                placeholder="Search for movies..."
+            >
+
+            <button type="submit">
+                🔍 Search
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- MOVIES SECTION -->
+<section class="movies-section">
+
+    <div class="section-heading">
+
+        <div>
+
+            <h2>🎬 Movies</h2>
+
+            {% if query %}
+
+                <p>
+                    Search results for:
+                    <strong>"{{ query }}"</strong>
+                </p>
+
+            {% else %}
+
+                <p>
+                    Explore popular movies and book your tickets.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    {% if movies %}
+
+    <div class="movie-grid">
+
+        {% for movie in movies %}
+
+        <div class="movie-card">
+
+            <!-- POSTER -->
+            <div class="movie-poster">
+
+                {% if movie.poster_url %}
+
+                    <img
+                        src="{{ movie.poster_url }}"
+                        alt="{{ movie.title }}"
+                        loading="lazy"
+                    >
+
+                {% else %}
+
+                    <div class="poster-placeholder">
+                        🎬
+                        <span>No Poster</span>
+                    </div>
+
+                {% endif %}
+
+
+                <!-- RATING -->
+                <div class="rating-badge">
+                    ⭐ {{ movie.rating }}
+                </div>
+
+            </div>
+
+
+            <!-- MOVIE INFO -->
+            <div class="movie-info">
+
+                <h3>
+                    {{ movie.title }}
+                </h3>
+
+                <p class="movie-meta">
+
+                    {{ movie.genre }}
+
+                    {% if movie.language %}
+                        · {{ movie.language }}
+                    {% endif %}
+
+                </p>
+
+
+                {% if movie.duration %}
+
+                <p class="movie-duration">
+                    ⏱️ {{ movie.duration }}
+                </p>
+
+                {% endif %}
+
+
+                {% if movie.release_date %}
+
+                <p class="release-date">
+                    📅 {{ movie.release_date }}
+                </p>
+
+                {% endif %}
+
+
+                <!-- VIEW DETAILS -->
+                <a
+                    href="{% url 'movie_detail' movie.id %}"
+                    class="book-btn"
+                >
+                    View Details →
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <!-- NO MOVIES -->
+
+    <div class="no-movies">
+
+        <div class="no-movie-icon">
+            🎬
+        </div>
+
+        <h2>
+            No Movies Found
+        </h2>
+
+        <p>
+            We couldn't find any movie matching
+            your search.
+        </p>
+
+        <a
+            href="{% url 'home' %}"
+            class="clear-search"
+        >
+            View All Movies
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- FEATURES -->
+<section class="cine-features">
+
+    <div class="feature">
+
+        <div class="feature-icon">
+            🎟️
+        </div>
+
+        <h3>
+            Easy Booking
+        </h3>
+
+        <p>
+            Book your movie tickets in just a few clicks.
+        </p>
+
+    </div>
+
+
+    <div class="feature">
+
+        <div class="feature-icon">
+            🪑
+        </div>
+
+        <h3>
+            Choose Your Seats
+        </h3>
+
+        <p>
+            Select the seats that you want before booking.
+        </p>
+
+    </div>
+
+
+    <div class="feature">
+
+        <div class="feature-icon">
+            📱
+        </div>
+
+        <h3>
+            Digital Tickets
+        </h3>
+
+        <p>
+            Get your booking details and digital ticket easily.
+        </p>
+
+    </div>
+
+</section>
+```
+
+</div>
+
+<!-- CLEAR SEARCH AUTOMATICALLY -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.querySelector(
+        '.movie-search input[name="q"]'
+    );
+
+    if (!searchInput) {
+        return;
+    }
+
+    searchInput.addEventListener("input", function () {
+
+        if (this.value.trim() === "") {
+
+            window.location.href = "{% url 'home' %}";
+
+        }
+
+    });
+
+});
+</script>
+
+{% endblock %}

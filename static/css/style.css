@@ -1,0 +1,1379 @@
+
+/* =========================================================
+   CINEBOOK - COMPLETE STYLE
+   Full Screen Movie Booking Website
+   ========================================================= */
+
+
+/* ---------- RESET ---------- */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #101322;
+    color: #f4f6ff;
+}
+
+
+/* ---------- LINKS ---------- */
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.navbar {
+    width: 100%;
+    min-height: 72px;
+    padding: 0 5%;
+
+    background: #171a2b;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    border-bottom: 1px solid #292d45;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #ffffff;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.nav-links a:hover {
+    color: #ff3d71;
+}
+
+.welcome {
+    color: #cdd2e8;
+    font-size: 14px;
+}
+
+.logout-btn {
+    border: none;
+    background: transparent;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    color: #ff3d71;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+main {
+    width: 100%;
+    min-height: calc(100vh - 72px);
+}
+
+
+/* =========================================================
+   CINEBOOK HOME
+   ========================================================= */
+
+.cine-home {
+    width: 100%;
+    min-height: calc(100vh - 72px);
+
+    background: #101322;
+}
+
+
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+
+.cine-hero {
+    width: 100%;
+    min-height: 500px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 70px 7%;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at 15% 30%,
+            rgba(255, 61, 113, 0.30),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 40%,
+            rgba(80, 90, 255, 0.30),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #171a2b,
+            #20264a,
+            #171a2b
+        );
+}
+
+
+/* ---------- HERO CONTENT ---------- */
+
+.hero-content {
+    width: 100%;
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+    text-align: center;
+}
+
+
+/* ---------- WELCOME TEXT ---------- */
+
+.hero-small {
+    margin: 0 0 18px;
+
+    color: #ff6b91;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    text-align: center;
+}
+
+
+/* ---------- MAIN HEADING ---------- */
+
+.hero-content h1 {
+    margin: 0 auto;
+
+    max-width: 900px;
+
+    font-size: clamp(42px, 6vw, 78px);
+
+    line-height: 1.05;
+
+    font-weight: 900;
+
+    color: #ffffff;
+
+    text-align: center;
+}
+
+.hero-content h1 span {
+    color: #ff3d71;
+}
+
+
+/* ---------- HERO DESCRIPTION ---------- */
+
+.hero-text {
+    max-width: 700px;
+
+    margin: 25px auto 30px;
+
+    color: #cdd2e8;
+
+    font-size: 18px;
+
+    line-height: 1.7;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   MOVIE SEARCH
+   ========================================================= */
+
+.movie-search {
+    width: 100%;
+
+    max-width: 700px;
+
+    margin: 30px auto 0;
+
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.movie-search input {
+    flex: 1;
+
+    height: 52px;
+
+    padding: 0 18px;
+
+    border: 1px solid #363b59;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #0f1220;
+
+    color: #ffffff;
+
+    font-size: 16px;
+}
+
+.movie-search input::placeholder {
+    color: #8e95aa;
+}
+
+.movie-search input:focus {
+    border-color: #ff3d71;
+}
+
+.movie-search button {
+    height: 52px;
+
+    padding: 0 25px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #ff3d71;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    transition: 0.2s;
+}
+
+.movie-search button:hover {
+    background: #e82d60;
+}
+
+
+/* =========================================================
+   MOVIES SECTION
+   ========================================================= */
+
+.movies-section {
+    width: 100%;
+
+    padding: 60px 5%;
+
+    background: #ffffff;
+}
+
+.section-heading {
+    width: 100%;
+
+    max-width: 1400px;
+
+    margin: 0 auto 35px;
+}
+
+.section-heading h2 {
+    margin: 0 0 8px;
+
+    font-size: 34px;
+
+    color: #171a2b;
+}
+
+.section-heading p {
+    margin: 0;
+
+    color: #687083;
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   MOVIE GRID
+   ========================================================= */
+
+.movie-grid {
+    width: 100%;
+
+    max-width: 1400px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+
+    gap: 28px;
+}
+
+
+/* =========================================================
+   MOVIE CARD
+   ========================================================= */
+
+.movie-card {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    border: 1px solid #e4e6ed;
+
+    box-shadow:
+        0 8px 25px rgba(20, 25, 50, 0.08);
+
+    transition:
+        transform 0.25s,
+        box-shadow 0.25s;
+}
+
+.movie-card:hover {
+    transform: translateY(-7px);
+
+    box-shadow:
+        0 18px 40px rgba(20, 25, 50, 0.16);
+}
+
+
+/* ---------- POSTER ---------- */
+
+.movie-poster {
+    width: 100%;
+
+    height: 330px;
+
+    position: relative;
+
+    background: #20243a;
+
+    overflow: hidden;
+}
+
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition: transform 0.35s;
+}
+
+.movie-card:hover .movie-poster img {
+    transform: scale(1.04);
+}
+
+
+/* ---------- POSTER PLACEHOLDER ---------- */
+
+.poster-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #171a2b,
+            #30375a
+        );
+
+    color: #ffffff;
+
+    font-size: 48px;
+}
+
+.poster-placeholder span {
+    font-size: 14px;
+
+    color: #bfc5dc;
+}
+
+
+/* ---------- RATING ---------- */
+
+.rating-badge {
+    position: absolute;
+
+    left: 12px;
+    bottom: 12px;
+
+    padding: 7px 11px;
+
+    border-radius: 7px;
+
+    background: rgba(0, 0, 0, 0.82);
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   MOVIE INFORMATION
+   ========================================================= */
+
+.movie-info {
+    padding: 20px;
+}
+
+.movie-info h3 {
+    margin: 0 0 9px;
+
+    color: #171a2b;
+
+    font-size: 20px;
+
+    line-height: 1.3;
+}
+
+.movie-meta {
+    margin: 0 0 10px;
+
+    color: #6d7487;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+.movie-duration,
+.release-date {
+    margin: 7px 0;
+
+    color: #7a8193;
+
+    font-size: 13px;
+}
+
+
+/* ---------- BOOK BUTTON ---------- */
+
+.book-btn {
+    display: block;
+
+    margin-top: 18px;
+
+    padding: 12px 15px;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    background: #ff3d71;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    transition: 0.2s;
+}
+
+.book-btn:hover {
+    background: #e82d60;
+}
+
+
+/* =========================================================
+   NO MOVIES
+   ========================================================= */
+
+.no-movies {
+    width: 100%;
+
+    max-width: 700px;
+
+    margin: 50px auto;
+
+    padding: 60px 30px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.no-movie-icon {
+    font-size: 55px;
+}
+
+.no-movies h2 {
+    color: #171a2b;
+}
+
+.no-movies p {
+    color: #707789;
+}
+
+.clear-search {
+    display: inline-block;
+
+    margin-top: 15px;
+
+    padding: 12px 20px;
+
+    border-radius: 8px;
+
+    background: #ff3d71;
+
+    color: #ffffff;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FEATURES
+   ========================================================= */
+
+.cine-features {
+    width: 100%;
+
+    padding: 70px 5%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 25px;
+
+    background: #101322;
+}
+
+.feature {
+    padding: 35px 25px;
+
+    text-align: center;
+
+    border-radius: 16px;
+
+    background: #171a2b;
+
+    border: 1px solid #292d45;
+}
+
+.feature-icon {
+    font-size: 40px;
+
+    margin-bottom: 15px;
+}
+
+.feature h3 {
+    margin: 0 0 10px;
+
+    color: #ffffff;
+}
+
+.feature p {
+    margin: 0;
+
+    color: #aeb5cc;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   MOVIE DETAIL PAGE
+   ========================================================= */
+
+.movie-detail-page {
+    width: 100%;
+
+    padding: 50px 5%;
+
+    background: #101322;
+
+    min-height: 100vh;
+}
+
+.detail-back {
+    max-width: 1400px;
+
+    margin: 0 auto 25px;
+}
+
+.detail-back a {
+    color: #ff5b86;
+
+    font-weight: 700;
+}
+
+.movie-detail-card {
+    width: 100%;
+
+    max-width: 1400px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns: 330px 1fr;
+
+    gap: 45px;
+
+    padding: 35px;
+
+    background: #171a2b;
+
+    border: 1px solid #292d45;
+
+    border-radius: 18px;
+}
+
+.detail-poster-box {
+    width: 100%;
+
+    height: 480px;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    background: #252a45;
+}
+
+.detail-poster {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.detail-poster-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    font-size: 55px;
+}
+
+.detail-poster-placeholder span {
+    font-size: 14px;
+
+    color: #aeb5cc;
+}
+
+.detail-information {
+    padding: 15px 0;
+}
+
+.detail-rating {
+    display: inline-block;
+
+    padding: 8px 13px;
+
+    border-radius: 8px;
+
+    background: #ff3d71;
+
+    color: #ffffff;
+
+    font-weight: 800;
+}
+
+.detail-information h1 {
+    margin: 20px 0 15px;
+
+    font-size: clamp(35px, 5vw, 58px);
+
+    color: #ffffff;
+}
+
+.detail-meta {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    color: #bfc5dc;
+}
+
+.detail-meta span {
+    padding: 8px 12px;
+
+    background: #20243a;
+
+    border-radius: 7px;
+}
+
+.movie-description {
+    margin-top: 30px;
+}
+
+.movie-description h3 {
+    color: #ffffff;
+}
+
+.movie-description p {
+    color: #bfc5dc;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   SHOWS
+   ========================================================= */
+
+.shows-section {
+    width: 100%;
+
+    max-width: 1400px;
+
+    margin: 45px auto 0;
+}
+
+.shows-heading h2 {
+    color: #ffffff;
+}
+
+.shows-heading p {
+    color: #aeb5cc;
+}
+
+.show-list-new {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+    margin-top: 25px;
+}
+
+.show-card-new {
+    display: grid;
+
+    grid-template-columns:
+        2fr 1fr 1fr 1fr 1fr auto;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 22px;
+
+    background: #171a2b;
+
+    border: 1px solid #292d45;
+
+    border-radius: 14px;
+}
+
+.show-theater {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.theater-icon {
+    font-size: 30px;
+}
+
+.show-theater h3 {
+    margin: 0 0 5px;
+
+    color: #ffffff;
+}
+
+.show-theater p {
+    margin: 0;
+
+    color: #aeb5cc;
+
+    font-size: 13px;
+}
+
+.show-label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #7f87a2;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.show-card-new strong {
+    color: #ffffff;
+}
+
+.book-show-btn {
+    display: inline-block;
+
+    padding: 11px 16px;
+
+    border-radius: 8px;
+
+    background: #ff3d71;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+.sold-out-btn {
+    padding: 11px 16px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #555a6c;
+
+    color: #ffffff;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   AUTH PAGES
+   ========================================================= */
+
+.mmt-auth-page {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(255, 61, 113, 0.18),
+            transparent 35%
+        ),
+        #101322;
+}
+
+.mmt-header {
+    width: 100%;
+
+    height: 72px;
+
+    padding: 0 6%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: #171a2b;
+
+    border-bottom: 1px solid #292d45;
+}
+
+.mmt-logo {
+    font-size: 25px;
+
+    font-weight: 900;
+}
+
+.mmt-logo span {
+    color: #ffffff;
+}
+
+.mmt-logo span span {
+    color: #ff3d71;
+}
+
+.mmt-header-right {
+    color: #aeb5cc;
+
+    font-size: 14px;
+}
+
+.mmt-auth-main {
+    width: 100%;
+
+    min-height: calc(100vh - 135px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 50px 20px;
+}
+
+.mmt-auth-card {
+    width: 100%;
+
+    max-width: 480px;
+
+    padding: 40px;
+
+    background: #171a2b;
+
+    border: 1px solid #292d45;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.30);
+}
+
+.mmt-card-top {
+    text-align: center;
+
+    margin-bottom: 28px;
+}
+
+.mmt-card-top h1 {
+    margin: 0 0 10px;
+
+    color: #ffffff;
+
+    font-size: 32px;
+}
+
+.mmt-card-top p {
+    margin: 0;
+
+    color: #aeb5cc;
+
+    line-height: 1.5;
+}
+
+.mmt-error {
+    margin-bottom: 20px;
+
+    padding: 12px 15px;
+
+    border-radius: 8px;
+
+    background: rgba(255, 61, 113, 0.12);
+
+    border: 1px solid rgba(255, 61, 113, 0.35);
+
+    color: #ff7d9f;
+
+    font-size: 14px;
+}
+
+.mmt-form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+.mmt-input-box label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+.mmt-input-box input {
+    width: 100%;
+
+    height: 48px;
+
+    padding: 0 14px;
+
+    border: 1px solid #3a405e;
+
+    border-radius: 8px;
+
+    background: #0f1220;
+
+    color: #ffffff;
+
+    outline: none;
+}
+
+.mmt-input-box input:focus {
+    border-color: #ff3d71;
+}
+
+.mmt-primary-btn,
+.mmt-secondary-btn {
+    width: 100%;
+
+    min-height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.mmt-primary-btn {
+    border: none;
+
+    background: #ff3d71;
+
+    color: #ffffff;
+
+    font-size: 15px;
+}
+
+.mmt-secondary-btn {
+    border: 1px solid #ff3d71;
+
+    color: #ff5d87;
+}
+
+.mmt-or {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin: 25px 0;
+
+    color: #777f99;
+}
+
+.mmt-or::before,
+.mmt-or::after {
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background: #30354e;
+}
+
+.mmt-register-text {
+    text-align: center;
+}
+
+.mmt-register-text p {
+    color: #aeb5cc;
+
+    margin-bottom: 12px;
+}
+
+
+/* =========================================================
+   MESSAGES
+   ========================================================= */
+
+.messages {
+    width: 100%;
+
+    padding: 12px 5%;
+}
+
+.message {
+    max-width: 1400px;
+
+    margin: auto;
+
+    padding: 13px 16px;
+
+    border-radius: 8px;
+
+    background: #222741;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    width: 100%;
+
+    padding: 25px;
+
+    text-align: center;
+
+    background: #0c0f1c;
+
+    color: #8e95aa;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .navbar {
+        padding: 15px 4%;
+
+        flex-wrap: wrap;
+    }
+
+    .cine-hero {
+        min-height: 450px;
+
+        padding: 60px 5%;
+    }
+
+    .movie-grid {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+    .show-card-new {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+    .movie-detail-card {
+        grid-template-columns:
+            280px 1fr;
+    }
+
+    .cine-features {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .navbar {
+        position: relative;
+
+        padding: 15px 20px;
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .logo {
+        text-align: center;
+    }
+
+    .nav-links {
+        justify-content: center;
+
+        flex-wrap: wrap;
+    }
+
+    .cine-hero {
+        min-height: 430px;
+
+        padding: 55px 22px;
+    }
+
+    .hero-small {
+        font-size: 13px;
+    }
+
+    .hero-content h1 {
+        font-size: 43px;
+    }
+
+    .hero-text {
+        font-size: 16px;
+    }
+
+    .movie-search {
+        flex-direction: column;
+
+        max-width: 500px;
+    }
+
+    .movie-search input {
+        width: 100%;
+    }
+
+    .movie-search button {
+        width: 100%;
+    }
+
+    .movies-section {
+        padding: 50px 20px;
+    }
+
+    .movie-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 16px;
+    }
+
+    .movie-poster {
+        height: 260px;
+    }
+
+    .movie-info {
+        padding: 15px;
+    }
+
+    .movie-info h3 {
+        font-size: 17px;
+    }
+
+    .cine-features {
+        grid-template-columns: 1fr;
+
+        padding: 50px 20px;
+    }
+
+    .movie-detail-page {
+        padding: 30px 20px;
+    }
+
+    .movie-detail-card {
+        grid-template-columns: 1fr;
+
+        padding: 20px;
+
+        gap: 25px;
+    }
+
+    .detail-poster-box {
+        height: 420px;
+    }
+
+    .show-card-new {
+        grid-template-columns: 1fr;
+    }
+
+    .mmt-auth-card {
+        padding: 28px 22px;
+    }
+
+    .mmt-header-right {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 450px) {
+
+    .movie-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .movie-poster {
+        height: 380px;
+    }
+
+    .hero-content h1 {
+        font-size: 38px;
+    }
+
+    .section-heading h2 {
+        font-size: 28px;
+    }
+}

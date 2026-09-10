@@ -1,0 +1,168 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - CineBook</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body class="mmt-auth-page">
+
+    <!-- TOP HEADER -->
+    <header class="mmt-header">
+
+        <a href="{% url 'home' %}" class="mmt-logo">
+            🎬 <span>Cine<span>Book</span></span>
+        </a>
+
+        <div class="mmt-header-right">
+            <span>🎟️ Book Movies Easily</span>
+        </div>
+
+    </header>
+
+
+    <!-- MAIN -->
+    <main class="mmt-auth-main">
+
+        <div class="mmt-auth-card">
+
+            <div class="mmt-card-top">
+
+                <h1>Login</h1>
+
+                <p>
+                    Login to continue your movie booking journey
+                </p>
+
+            </div>
+
+
+            {% if form.errors %}
+
+            <div class="mmt-error">
+                ❌ Incorrect username or password.
+            </div>
+
+            {% endif %}
+
+
+            <form method="post" class="mmt-form">
+
+                {% csrf_token %}
+
+
+                <!-- USERNAME -->
+
+                <div class="mmt-input-box">
+
+                    <label for="id_username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="mmt-input-box">
+
+                    <label for="id_password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- FORGOT PASSWORD -->
+
+                <div style="text-align: right; margin-top: -8px; margin-bottom: 18px;">
+
+                    <a
+                        href="{% url 'password_reset' %}"
+                        style="
+                            color: #e50914;
+                            text-decoration: none;
+                            font-size: 14px;
+                            font-weight: 600;
+                        "
+                    >
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="submit"
+                    class="mmt-primary-btn"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <div class="mmt-or">
+                <span>OR</span>
+            </div>
+
+
+            <div class="mmt-register-text">
+
+                <p>
+                    New to CineBook?
+                </p>
+
+                <a
+                    href="{% url 'register' %}"
+                    class="mmt-secondary-btn"
+                >
+                    Create a New Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer class="mmt-footer">
+
+        © 2026 CineBook · Your Movie Booking Partner
+
+    </footer>
+
+</body>
+
+</html>

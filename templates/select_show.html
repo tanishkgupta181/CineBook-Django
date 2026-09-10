@@ -1,0 +1,699 @@
+{% extends "base.html" %}
+
+{% block title %}Select Your Show - {{ movie.title }}{% endblock %}
+
+{% block content %}
+
+<div class="show-page">
+
+    <!-- HEADER -->
+    <div class="show-header">
+        <div class="show-icon">🎟️</div>
+
+        <h1>Select Your Show</h1>
+
+        <p>
+            Choose your preferred theatre, date and show time
+            for <strong>{{ movie.title }}</strong>
+        </p>
+    </div>
+
+
+    {% if shows %}
+
+    <!-- SHOWS -->
+    <div class="shows-list">
+
+        {% for show in shows %}
+
+        <div class="show-card">
+
+            <!-- LEFT -->
+            <div class="show-info">
+
+                <h2>
+                    {{ movie.title }}
+                </h2>
+
+                <div class="show-details">
+
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <div>
+                            <small>Date</small>
+                            <strong>
+                                {{ show.show_date|date:"d M Y" }}
+                            </strong>
+                        </div>
+                    </div>
+
+
+                    <div class="detail-item">
+                        <span class="detail-icon">🕐</span>
+                        <div>
+                            <small>Show Time</small>
+                            <strong>
+                                {{ show.show_time|time:"h:i A" }}
+                            </strong>
+                        </div>
+                    </div>
+
+
+                    <div class="detail-item">
+                        <span class="detail-icon">🎭</span>
+                        <div>
+                            <small>Theatre</small>
+
+                            <strong>
+                                {% if show.theater %}
+                                    {{ show.theater.name }}
+                                {% elif show.theatre %}
+                                    {{ show.theatre }}
+                                {% else %}
+                                    CineBook Cinema
+                                {% endif %}
+                            </strong>
+
+                            {% if show.theater.city %}
+                            <span class="city">
+                                📍 {{ show.theater.city }}
+                            </span>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+
+                    <div class="detail-item">
+                        <span class="detail-icon">💺</span>
+                        <div>
+                            <small>Available Seats</small>
+
+                            <strong>
+                                {{ show.seats }}
+                            </strong>
+                        </div>
+                    </div>
+
+
+                    <div class="detail-item price-item">
+                        <span class="detail-icon">💰</span>
+
+                        <div>
+                            <small>Ticket Price</small>
+
+                            <strong class="price">
+                                ₹{{ show.ticket_price }}
+                            </strong>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT -->
+            <div class="show-action">
+
+                <div class="price-box">
+
+                    <span>Ticket Price</span>
+
+                    <strong>
+                        ₹{{ show.ticket_price }}
+                    </strong>
+
+                </div>
+
+
+                <a
+                    href="{% url 'book_ticket' show.id %}"
+                    class="select-btn"
+                >
+                    <span>💺</span>
+                    Select Seats
+                    <span class="arrow">→</span>
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- BOTTOM INFO -->
+
+    <div class="booking-info">
+
+        <div class="info-icon">
+            🔒
+        </div>
+
+        <div>
+
+            <strong>
+                Secure Booking
+            </strong>
+
+            <p>
+                Select your seats first and continue to secure payment.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+    <!-- NO SHOWS -->
+
+    <div class="no-shows">
+
+        <div class="empty-icon">
+            🎬
+        </div>
+
+        <h2>
+            No Shows Available
+        </h2>
+
+        <p>
+            There are currently no upcoming shows available
+            for <strong>{{ movie.title }}</strong>.
+        </p>
+
+        <a
+            href="{% url 'home' %}"
+            class="home-btn"
+        >
+            ← Browse Other Movies
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+/* =====================================================
+   MAIN PAGE
+===================================================== */
+
+.show-page {
+    width: 100%;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 35px 20px 60px;
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.show-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.show-icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+}
+
+.show-header h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.show-header p {
+    margin-top: 10px;
+    opacity: .70;
+    font-size: 16px;
+}
+
+.show-header strong {
+    opacity: 1;
+}
+
+
+/* =====================================================
+   SHOW LIST
+===================================================== */
+
+.shows-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* =====================================================
+   SHOW CARD
+===================================================== */
+
+.show-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+
+    padding: 24px;
+
+    background: #151515;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.25);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.show-card:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(229,9,20,.45);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.35);
+}
+
+
+/* =====================================================
+   MOVIE TITLE
+===================================================== */
+
+.show-info {
+    flex: 1;
+}
+
+.show-info h2 {
+    margin: 0 0 20px;
+
+    font-size: 23px;
+
+    font-weight: 750;
+}
+
+
+/* =====================================================
+   DETAILS
+===================================================== */
+
+.show-details {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 14px;
+}
+
+
+.detail-item {
+    min-width: 150px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 11px 13px;
+
+    background: #1d1d1d;
+
+    border-radius: 10px;
+}
+
+
+.detail-icon {
+    font-size: 19px;
+    line-height: 1.4;
+}
+
+
+.detail-item small {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 11px;
+
+    opacity: .55;
+
+    text-transform: uppercase;
+
+    letter-spacing: .4px;
+}
+
+
+.detail-item strong {
+    display: block;
+
+    font-size: 14px;
+
+    font-weight: 650;
+}
+
+
+.city {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 11px;
+
+    opacity: .55;
+}
+
+
+/* =====================================================
+   PRICE
+===================================================== */
+
+.price-item .price {
+    color: #ff4b55;
+
+    font-size: 16px;
+}
+
+
+/* =====================================================
+   ACTION
+===================================================== */
+
+.show-action {
+    min-width: 190px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 12px;
+}
+
+
+.price-box {
+    text-align: center;
+
+    padding: 10px 15px;
+
+    background: #1d1d1d;
+
+    border-radius: 9px;
+}
+
+
+.price-box span {
+    display: block;
+
+    font-size: 11px;
+
+    opacity: .55;
+
+    margin-bottom: 3px;
+}
+
+
+.price-box strong {
+    font-size: 20px;
+
+    color: #ff4b55;
+}
+
+
+/* =====================================================
+   SELECT BUTTON
+===================================================== */
+
+.select-btn {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 13px 18px;
+
+    background: #e50914;
+
+    color: #fff;
+
+    text-decoration: none;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 5px 15px rgba(229,9,20,.25);
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.select-btn:hover {
+    background: #ff1a25;
+
+    color: #fff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(229,9,20,.35);
+}
+
+
+.arrow {
+    font-size: 18px;
+
+    transition: transform .2s ease;
+}
+
+
+.select-btn:hover .arrow {
+    transform: translateX(4px);
+}
+
+
+/* =====================================================
+   BOTTOM INFO
+===================================================== */
+
+.booking-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top: 28px;
+
+    padding: 18px 20px;
+
+    background: #121212;
+
+    border: 1px solid rgba(255,255,255,.07);
+
+    border-radius: 12px;
+}
+
+
+.info-icon {
+    font-size: 25px;
+}
+
+
+.booking-info strong {
+    font-size: 15px;
+}
+
+
+.booking-info p {
+    margin: 4px 0 0;
+
+    font-size: 13px;
+
+    opacity: .55;
+}
+
+
+/* =====================================================
+   NO SHOWS
+===================================================== */
+
+.no-shows {
+    text-align: center;
+
+    padding: 70px 25px;
+
+    background: #151515;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 16px;
+}
+
+
+.empty-icon {
+    font-size: 55px;
+
+    margin-bottom: 15px;
+}
+
+
+.no-shows h2 {
+    margin: 0;
+
+    font-size: 25px;
+}
+
+
+.no-shows p {
+    margin: 12px auto 25px;
+
+    max-width: 550px;
+
+    opacity: .65;
+}
+
+
+.home-btn {
+    display: inline-block;
+
+    padding: 12px 22px;
+
+    background: #e50914;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    font-weight: 700;
+}
+
+
+.home-btn:hover {
+    background: #ff1a25;
+
+    color: white;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    .show-page {
+        padding: 25px 14px 45px;
+    }
+
+
+    .show-header h1 {
+        font-size: 28px;
+    }
+
+
+    .show-card {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        padding: 18px;
+    }
+
+
+    .show-info h2 {
+        font-size: 21px;
+    }
+
+
+    .show-details {
+        flex-direction: column;
+
+        gap: 9px;
+    }
+
+
+    .detail-item {
+        width: 100%;
+
+        box-sizing: border-box;
+    }
+
+
+    .show-action {
+        width: 100%;
+
+        min-width: 0;
+    }
+
+
+    .select-btn {
+        width: 100%;
+
+        box-sizing: border-box;
+    }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 450px) {
+
+    .show-header h1 {
+        font-size: 25px;
+    }
+
+
+    .show-header p {
+        font-size: 14px;
+    }
+
+
+    .show-card {
+        border-radius: 12px;
+    }
+
+
+    .booking-info {
+        align-items: flex-start;
+    }
+
+}
+
+</style>
+
+{% endblock %}
