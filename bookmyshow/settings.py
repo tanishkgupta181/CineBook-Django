@@ -1,3 +1,4 @@
+
 import os
 from pathlib import Path
 
@@ -26,7 +27,10 @@ SECRET_KEY = os.getenv(
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+DEBUG = os.getenv(
+    "DEBUG",
+    "True"
+).lower() == "true"
 
 
 # ==========================================
@@ -44,12 +48,27 @@ ALLOWED_HOSTS = [
 railway_domain = os.getenv(
     "RAILWAY_PUBLIC_DOMAIN",
     "cinebook-django-production.up.railway.app"
-)
+).strip()
 
-ALLOWED_HOSTS.append(railway_domain)
+# Prevent accidental https:// inside ALLOWED_HOSTS
+railway_domain = railway_domain.replace(
+    "https://",
+    ""
+).replace(
+    "http://",
+    ""
+).rstrip("/")
+
+if railway_domain:
+    ALLOWED_HOSTS.append(
+        railway_domain
+    )
 
 # Optional custom hosts
-extra_allowed_hosts = os.getenv("ALLOWED_HOSTS", "")
+extra_allowed_hosts = os.getenv(
+    "ALLOWED_HOSTS",
+    ""
+)
 
 if extra_allowed_hosts:
     ALLOWED_HOSTS.extend(
@@ -64,13 +83,14 @@ if extra_allowed_hosts:
 # ==========================================
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://subsidiary-jets-wise-durable.trycloudflare.com",
+    "https://cinebook-django-production.up.railway.app",
 ]
 
-# Railway public domain
-CSRF_TRUSTED_ORIGINS.append(
-    f"https://{railway_domain}"
-)
+# Add Railway domain dynamically
+if railway_domain:
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{railway_domain}"
+    )
 
 # Optional custom CSRF origins
 extra_csrf_origins = os.getenv(
@@ -80,10 +100,17 @@ extra_csrf_origins = os.getenv(
 
 if extra_csrf_origins:
     CSRF_TRUSTED_ORIGINS.extend(
-        origin.strip()
+        origin.strip().rstrip("/")
         for origin in extra_csrf_origins.split(",")
         if origin.strip()
     )
+
+# Remove duplicate origins
+CSRF_TRUSTED_ORIGINS = list(
+    dict.fromkeys(
+        CSRF_TRUSTED_ORIGINS
+    )
+)
 
 
 # ==========================================
@@ -147,7 +174,8 @@ ROOT_URLCONF = "bookmyshow.urls"
 TEMPLATES = [
 
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "BACKEND":
+            "django.template.backends.django.DjangoTemplates",
 
         "DIRS": [
             BASE_DIR / "templates"
@@ -181,7 +209,9 @@ WSGI_APPLICATION = "bookmyshow.wsgi.application"
 # DATABASE
 # ==========================================
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv(
+    "DATABASE_URL"
+)
 
 if DATABASE_URL:
 
@@ -200,9 +230,11 @@ else:
 
         "default": {
 
-            "ENGINE": "django.db.backends.sqlite3",
+            "ENGINE":
+                "django.db.backends.sqlite3",
 
-            "NAME": BASE_DIR / "db.sqlite3",
+            "NAME":
+                BASE_DIR / "db.sqlite3",
         }
     }
 
@@ -237,21 +269,25 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = (
+    BASE_DIR / "staticfiles"
+)
 
 
 # WhiteNoise compressed static files
 STORAGES = {
 
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND":
+            "django.core.files.storage.FileSystemStorage",
     },
 
     "staticfiles": {
-        "BACKEND": (
-            "whitenoise.storage."
-            "CompressedManifestStaticFilesStorage"
-        ),
+        "BACKEND":
+            (
+                "whitenoise.storage."
+                "CompressedManifestStaticFilesStorage"
+            ),
     },
 }
 
@@ -269,7 +305,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 # DEFAULT PRIMARY KEY
 # ==========================================
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = (
+    "django.db.models.BigAutoField"
+)
 
 
 # ==========================================
@@ -353,3 +391,4 @@ LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Login session expires when browser is closed
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
