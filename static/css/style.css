@@ -1,4 +1,5 @@
 
+
 /* =========================================================
    CINEBOOK - COMPLETE STYLE
    Full Screen Movie Booking Website
@@ -252,6 +253,10 @@ main {
 .movie-search input {
     flex: 1;
 
+    width: 100%;
+
+    min-width: 0;
+
     height: 52px;
 
     padding: 0 18px;
@@ -278,6 +283,8 @@ main {
 }
 
 .movie-search button {
+    flex-shrink: 0;
+
     height: 52px;
 
     padding: 0 25px;
@@ -1235,6 +1242,10 @@ footer {
         grid-template-columns:
             repeat(2, 1fr);
     }
+
+    .movie-search {
+        max-width: 650px;
+    }
 }
 
 
@@ -1267,7 +1278,7 @@ footer {
     .cine-hero {
         min-height: 430px;
 
-        padding: 55px 22px;
+        padding: 55px 18px;
     }
 
     .hero-small {
@@ -1282,19 +1293,51 @@ footer {
         font-size: 16px;
     }
 
+
+    /* ---------- MOBILE SEARCH ---------- */
+
     .movie-search {
+        width: 100%;
+
+        max-width: none;
+
+        margin: 28px auto 0;
+
+        display: flex;
+
         flex-direction: column;
 
-        max-width: 500px;
+        align-items: stretch;
+
+        gap: 12px;
     }
 
     .movie-search input {
         width: 100%;
+
+        min-width: 100%;
+
+        height: 54px;
+
+        padding: 0 16px;
+
+        font-size: 16px;
+
+        border-radius: 10px;
     }
 
     .movie-search button {
         width: 100%;
+
+        height: 54px;
+
+        padding: 0 20px;
+
+        font-size: 16px;
+
+        border-radius: 10px;
     }
+
 
     .movies-section {
         padding: 50px 20px;
@@ -1376,4 +1419,30 @@ footer {
     .section-heading h2 {
         font-size: 28px;
     }
+
+    /* Extra-small phone search */
+    .movie-search {
+        width: 100%;
+
+        padding: 0;
+    }
+
+    .movie-search input {
+        width: 100%;
+
+        min-width: 100%;
+
+        height: 56px;
+
+        font-size: 16px;
+    }
+
+    .movie-search button {
+        width: 100%;
+
+        height: 56px;
+
+        font-size: 16px;
+    }
 }
+
