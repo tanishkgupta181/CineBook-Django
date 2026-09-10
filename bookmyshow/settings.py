@@ -41,10 +41,12 @@ ALLOWED_HOSTS = [
 ]
 
 # Railway public domain
-railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+railway_domain = os.getenv(
+    "RAILWAY_PUBLIC_DOMAIN",
+    "cinebook-django-production.up.railway.app"
+)
 
-if railway_domain:
-    ALLOWED_HOSTS.append(railway_domain)
+ALLOWED_HOSTS.append(railway_domain)
 
 # Optional custom hosts
 extra_allowed_hosts = os.getenv("ALLOWED_HOSTS", "")
@@ -65,11 +67,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://subsidiary-jets-wise-durable.trycloudflare.com",
 ]
 
-if railway_domain:
-    CSRF_TRUSTED_ORIGINS.append(
-        f"https://{railway_domain}"
-    )
+# Railway public domain
+CSRF_TRUSTED_ORIGINS.append(
+    f"https://{railway_domain}"
+)
 
+# Optional custom CSRF origins
 extra_csrf_origins = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
     ""
