@@ -28,3 +28,4 @@ media/
 Thumbs.db
 # Collected static files
 staticfiles/
+cinebook_data.json
