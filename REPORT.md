@@ -1,52 +1,87 @@
-# CineBook – Movie Booking System
+# CineBook - Online Movie Booking and Management System
 
 ## Internship Final Project Report
 
 ---
 
-## 1. Project Title
+# 1. Project Title
 
-**CineBook – Online Movie Booking and Management System**
+**CineBook - Online Movie Booking and Management System**
 
-CineBook is a Django-based movie booking web application inspired by online movie ticket booking platforms. The system allows users to browse movies, view movie details, check available shows, select seats, make payments, manage bookings and download tickets.
+CineBook is a Django-based online movie booking and management platform inspired by modern movie ticket booking websites such as BookMyShow.
 
-The system also provides an administrator dashboard for monitoring business analytics and generating reports.
+The system allows users to browse movies, search and discover movies, view movie details, check upcoming shows, select seats, make online payments, confirm bookings, view booking history, and download tickets.
+
+The system also provides movie reviews and ratings, trailer and cast information, movie discovery APIs, and an administrator dashboard for monitoring bookings, revenue, movie performance, theater performance, payments, refunds, and user activity.
 
 ---
 
-## 2. Technology Stack
+# 2. Project Objectives
 
-### Frontend
+The main objectives of CineBook are:
+
+1. To develop a complete online movie ticket booking platform using Django.
+2. To provide users with an easy movie discovery and booking experience.
+3. To implement secure seat selection and temporary seat reservation.
+4. To integrate online payments using Razorpay.
+5. To generate booking tickets after successful payment.
+6. To process ticket and email tasks using Celery and Redis.
+7. To provide movie reviews and ratings.
+8. To provide administrators with analytical reports and business insights.
+9. To deploy the application on a cloud platform.
+10. To provide a REST API for movie discovery.
+
+---
+
+# 3. Technology Stack
+
+## Frontend
 
 * HTML5
 * CSS3
 * JavaScript
 * Django Templates
 
-### Backend
+## Backend
 
 * Python
 * Django 5.2.17
 * Django REST Framework
 
-### Database
+## Database
+
+### Local Development
 
 * SQLite
 
-### Payment Gateway
+### Production
+
+* PostgreSQL
+* Railway PostgreSQL service
+
+## Payment Gateway
 
 * Razorpay
 
-### External API
+## External API
 
 * TMDB API
+* Bearer-token based authentication
 
-### Background Processing
+## Background Processing
 
 * Celery
 * Redis
 
-### Development Tools
+## Web Server
+
+* Gunicorn
+
+## Deployment
+
+* Railway
+
+## Development and Version Control
 
 * Visual Studio Code
 * Git
@@ -54,71 +89,93 @@ The system also provides an administrator dashboard for monitoring business anal
 
 ---
 
-## 3. Main Features
+# 4. Project Features
 
 CineBook provides the following major features:
 
-1. User registration and login
-2. User authentication and logout
+1. User registration
+2. User login and logout
 3. Movie listing
 4. Movie search
 5. Movie details
-6. Movie genres and languages
+6. Genre and language information
 7. Movie ratings
 8. Movie reviews
-9. Review reporting
-10. Movie trailers
-11. Movie posters
-12. Cast information
-13. Theater and city information
-14. Show date and show time
-15. Seat selection
-16. Temporary seat reservation
-17. Razorpay payment integration
-18. Payment verification
-19. Payment failure and cancellation handling
-20. Booking confirmation
-21. Booking history
-22. Ticket generation
-23. Ticket download
-24. Email notification
-25. Movie discovery API
-26. TMDB movie metadata
-27. Admin dashboard
-28. Revenue analytics
-29. Booking analytics
-30. CSV report export
+9. Review editing
+10. Review reporting
+11. Trailer integration
+12. Movie posters
+13. Cast information
+14. Similar movies
+15. Trending movies
+16. Recently released movies
+17. Theater management
+18. City information
+19. Show date management
+20. Show time management
+21. Ticket price management
+22. Seat selection
+23. Live seat availability
+24. Temporary seat reservation
+25. Razorpay order creation
+26. Razorpay payment verification
+27. Payment failure handling
+28. Payment cancellation handling
+29. Payment retry
+30. Duplicate booking protection
+31. Payment amount verification
+32. Booking confirmation
+33. Booking history
+34. Ticket PDF generation
+35. Ticket download
+36. Background ticket/email processing
+37. Movie Discovery REST API
+38. TMDB metadata integration
+39. Admin dashboard
+40. Revenue analytics
+41. Booking analytics
+42. Theater performance analysis
+43. Movie performance analysis
+44. Peak booking hour analysis
+45. User growth statistics
+46. Cancellation statistics
+47. Refund statistics
+48. Custom date filtering
+49. CSV report export
 
 ---
 
-## 4. User Module
+# 5. User Module
 
-The user module allows customers to create an account and securely access the CineBook system.
+The User Module allows customers to create accounts and securely access the CineBook system.
 
-### User Features
+## User Functions
 
-* Register account
-* Login
-* Logout
+* User registration
+* User login
+* User logout
+* Authentication
 * Browse movies
 * Search movies
-* View movie information
+* View movie details
 * View available shows
 * Select seats
-* Make payment
-* Receive booking confirmation
+* Make payments
+* Confirm bookings
 * View booking history
-* Download ticket
+* Download tickets
 
-Django's built-in authentication system is used for user login and authorization.
+Django's authentication framework is used for user authentication and access control.
 
 ---
 
-## 5. Movie Management
+# 6. Movie Management
 
-The movie management module stores and displays movie information.
+The movie management system stores and displays detailed information about movies.
 
-Movie information includes:
+## Movie Information
+
+Each movie can contain:
 
 * Movie title
 * Description
@@ -133,15 +190,15 @@ Movie information includes:
 * Age certification
 * Cast members
 
-The application also supports multiple genres, languages, cast members and movie posters.
+The system supports multiple genres, languages, cast members, and movie posters through related models and many-to-many relationships.
 
 ---
 
-## 6. Movie Discovery
+# 7. Movie Discovery
 
-CineBook provides movie discovery and filtering functionality.
+CineBook provides movie discovery functionality for helping users find suitable movies.
 
-Users can search and filter movies using information such as:
+Users can search or filter movies by:
 
 * Movie title
 * Genre
@@ -152,236 +209,380 @@ Users can search and filter movies using information such as:
 * Rating
 * Show timing
 
-Movies can also be sorted according to:
+Movies can also be sorted using:
 
 * Popularity
 * Newest releases
 * Rating
 * Ticket price
 
-The Movie Discovery API provides movie data using Django REST Framework.
+The project also contains a Movie Discovery REST API implemented using Django REST Framework.
 
 ---
 
-## 7. Reviews and Ratings
+# 8. Movie Details and Recommendations
 
-Users can provide ratings and reviews for movies.
+The movie details page displays:
 
-The review system includes:
+* Movie title
+* Description
+* Genre
+* Language
+* Duration
+* Rating
+* Release information
+* Posters
+* Trailer
+* Cast members
+* Available upcoming shows
+* Similar movies
+* Trending movies
+* Recently released movies
+* Reviews and ratings
 
-* 1 to 5 star ratings
+The system also records user movie activity for improving the overall discovery experience.
+
+---
+
+# 9. Reviews and Ratings
+
+CineBook provides a review and rating system.
+
+## Review Features
+
+* 1 to 5 star rating
 * Written reviews
 * Review creation
 * Review editing
 * Review reporting
-* Verified viewer checking
-* Average movie rating calculation
+* Average rating calculation
+* Watched-movie verification
 
-A user can submit only one review for the same movie.
+A user can maintain one review for the same movie using an update-or-create operation.
+
+Review access is restricted to users who have completed a booking for the corresponding movie.
 
 ---
 
-## 8. Theater and Show Management
+# 10. Theater and Show Management
 
-The system stores theater and show information.
+The system maintains theater and show information.
+
+## Theater Information
+
+* Theater name
+* City
+
+## Show Information
 
 Each show contains:
 
 * Movie
 * Theater
-* City
 * Show date
 * Show time
 * Ticket price
-* Available seat capacity
+* Total seat capacity
 
-Users can select a suitable show before booking tickets.
+Users can choose a suitable theater and show before continuing with seat selection.
 
 ---
 
-## 9. Seat Booking System
+# 11. Seat Booking System
 
-The booking system allows users to select seats for a particular show.
+The CineBook booking system provides seat-based movie booking.
 
 The system stores:
 
-* Customer information
+* Customer name
+* Email
+* Phone number
+* User
+* Show
 * Selected seats
 * Number of seats
-* Show
-* User
 * Total booking amount
 * Booking ID
 * Payment reference
+* Screen information
 * Ticket information
 
-The system prevents conflicting seat reservations during the booking process.
+The application validates seat selection before allowing a booking to continue.
 
 ---
 
-## 10. Temporary Seat Reservation
+# 12. Live Seat Availability
 
-CineBook includes temporary seat reservation during the payment process.
+CineBook provides live seat availability for shows.
 
-When a payment transaction is created, selected seats can be temporarily reserved.
+The system separates seats into:
 
-The reservation system stores an expiry time and automatically identifies expired pending reservations.
+* Booked seats
+* Temporarily reserved seats
+* Available seats
+* Current user's reserved seats
 
-This reduces the possibility of multiple users attempting to book the same seats during payment.
+This helps users see the current seat status before payment.
+
+Database transactions and row-level locking are used in important booking operations to reduce conflicting seat selections.
 
 ---
 
-## 11. Payment Integration
+# 13. Temporary Seat Reservation
 
-Razorpay is integrated into CineBook for online payments.
+CineBook provides temporary seat reservation during payment.
 
-The payment system supports:
+When a payment transaction is created, selected seats are temporarily associated with a pending `PaymentTransaction`.
+
+The current reservation duration is:
+
+**2 minutes**
+
+The system stores:
+
+* Reservation status
+* Reservation expiry time
+* Selected seats
+* Show
+* User
+* Payment transaction
+
+Expired reservations are automatically treated as unavailable only until their expiry time and are then released by the application logic.
+
+This reduces the possibility of multiple customers attempting to purchase the same seats during the payment process.
+
+---
+
+# 14. Razorpay Payment Integration
+
+Razorpay is integrated into CineBook for online payment processing.
+
+## Payment Features
 
 * Razorpay order creation
-* Payment verification
-* Successful payments
-* Failed payments
-* Cancelled payments
-* Payment transaction tracking
+* Payment checkout
+* Payment signature verification
+* Payment amount verification
+* Successful payment handling
+* Failed payment handling
+* Cancelled payment handling
 * Payment retry
 * Duplicate booking protection
-* Amount verification
+* Payment transaction tracking
 * Refund status tracking
+* Razorpay webhook support
 
-Payment transactions are stored separately using the `PaymentTransaction` model.
+Payment information is stored in the `PaymentTransaction` model.
+
+The system verifies the Razorpay payment signature before confirming a booking.
+
+The booking amount is also compared with the Razorpay order amount before confirmation.
 
 ---
 
-## 12. Ticket Management
+# 15. Payment Security
 
-After a successful booking, CineBook generates a booking ticket.
+The payment module includes server-side validation.
 
-The ticket contains relevant booking information such as:
+Important security checks include:
 
-* Customer name
+* Razorpay credentials stored as environment variables
+* Payment signature verification
+* Payment order ownership verification
+* Payment amount verification
+* Payment transaction lookup
+* Duplicate booking protection
+* Seat conflict checking
+* Temporary reservation validation
+
+Production payment secrets are not stored directly in source code.
+
+---
+
+# 16. Booking Confirmation
+
+After successful payment verification, CineBook creates a booking record containing:
+
+* Booking ID
+* User
 * Movie
 * Theater
+* Show
+* Seats
+* Customer information
+* Total amount
+* Payment reference
+* Screen
+
+The confirmed booking is then available from the user's booking history.
+
+---
+
+# 17. Ticket Management
+
+After a successful booking, CineBook generates a ticket containing important booking information.
+
+The ticket can contain:
+
+* Customer name
+* Movie name
+* Theater name
+* Screen
 * Show date
 * Show time
 * Selected seats
 * Booking ID
-* Payment information
+* Payment reference
+* Total amount
 
-Users can download their tickets from the booking system.
-
----
-
-## 13. Background Task Processing
-
-Celery and Redis are used for background processing.
-
-Background processing is used for tasks such as ticket generation and email notification.
-
-This prevents long-running operations from unnecessarily blocking the main web request.
+Users can download the generated ticket as a PDF.
 
 ---
 
-## 14. TMDB Integration
+# 18. Background Task Processing
 
-The application supports TMDB API integration for movie metadata.
+Celery and Redis are used for background task processing.
+
+The project contains the background task:
+
+```text
+movies.tasks.generate_ticket_and_send_email
+```
+
+This task is used for operations such as ticket generation and email processing after successful bookings.
+
+Redis acts as the broker/result backend and Celery processes queued background tasks.
+
+In the production Railway environment, the Django web server and Celery worker are started together using the project startup script:
+
+```bash
+python start.py
+```
+
+---
+
+# 19. TMDB Integration
+
+CineBook supports TMDB API integration for movie metadata.
 
 TMDB can provide information such as:
 
 * Movie information
 * Posters
-* Backdrops
 * Cast
-* Trailer-related information
 * Popularity
 * Release information
+* Additional movie metadata
 
-Bearer-token authentication is used for API requests.
+The application uses Bearer-token authentication for TMDB API requests.
+
+The TMDB token is configured through an environment variable and is not stored in the source code.
 
 ---
 
-# 15. Admin Dashboard – Task 6
+# 20. Movie Discovery API
 
-## Overview
+CineBook provides a REST API using Django REST Framework.
 
-CineBook provides a comprehensive Admin Dashboard for monitoring business performance.
+The movie discovery endpoint is:
 
-The dashboard provides real-time analytical information including:
+```text
+/api/movies/
+```
 
-* Daily revenue
-* Weekly revenue
-* Monthly revenue
-* Yearly revenue
-* Booking trends
+The API can provide movie information including:
+
+* ID
+* Title
+* Description
+* Genre
+* Language
+* Duration
+* Rating
+* Average rating
+* Trailer URL
+* Age certification
+* Poster URL
+* Release date
+* Popularity
+
+Filtering is supported for movie discovery parameters such as search, genre, and language.
+
+---
+
+# 21. Admin Dashboard
+
+CineBook provides a dedicated Admin Dashboard for monitoring business operations.
+
+The dashboard is designed for authorized administrators.
+
+It provides analytics for:
+
+* Revenue
+* Bookings
+* Seats booked
+* Movie performance
+* Theater performance
 * Theater occupancy
-* Most booked movies
-* Top-performing theaters
 * Peak booking hours
+* Payment statistics
 * Cancellation statistics
 * Refund statistics
 * User growth
 
 ---
 
-## 16. Revenue Analytics
+# 22. Revenue Analytics
 
-The Admin Dashboard provides revenue reports for:
+The Admin Dashboard provides revenue information for selected periods.
 
-### Daily Revenue
+Revenue can be analyzed by:
 
-Displays revenue generated on the latest booking day within the selected date range.
+* Day
+* Week
+* Month
+* Year
 
-### Weekly Revenue
-
-Displays revenue grouped by week.
-
-### Monthly Revenue
-
-Displays revenue grouped by month.
-
-### Yearly Revenue
-
-Displays revenue grouped by year.
-
-The revenue calculations are generated using Django ORM aggregation.
+The dashboard uses Django ORM aggregation to calculate revenue based on booking records.
 
 ---
 
-# 17. Booking Trends
+# 23. Booking Trends
 
-The dashboard displays booking trends based on date.
+Booking trends are displayed based on booking date.
 
-Each trend contains:
+Each record can contain:
 
 * Booking date
 * Number of bookings
 * Seats booked
 * Revenue
 
-This allows administrators to identify changes in booking activity.
+This allows administrators to analyze changes in customer booking activity.
 
 ---
 
-# 18. Theater Performance and Occupancy
+# 24. Theater Performance and Occupancy
 
-The dashboard provides theater-wise performance information.
+The Admin Dashboard provides theater-wise performance information.
 
-It displays:
+It can display:
 
 * Theater name
 * City
 * Theater capacity
 * Booked seats
-* Average occupancy
+* Occupancy
 * Number of bookings
 * Revenue
 
-Average occupancy is calculated across the booked show instances for the selected period.
+Occupancy is calculated using booking and show information for the selected date range.
 
 ---
 
-# 19. Most Booked Movies
+# 25. Most Booked Movies
 
-The dashboard identifies movies with the highest booking activity.
+The dashboard identifies movies with higher booking activity.
 
 The report includes:
 
@@ -394,134 +595,181 @@ This helps administrators identify popular movies.
 
 ---
 
-# 20. Peak Booking Hours
+# 26. Peak Booking Hours
 
-The dashboard analyzes booking activity according to show time.
+The dashboard analyzes booking and show activity by hour.
 
-It displays:
+Information includes:
 
 * Hour
 * Number of bookings
 * Seats booked
 * Revenue
 
-This helps identify the most active booking/show periods.
+This can be used to identify periods with higher booking activity.
 
 ---
 
-# 21. Cancellation and Refund Statistics
+# 27. Cancellation and Refund Statistics
 
-The dashboard provides payment and cancellation information.
+The Admin Dashboard provides payment and cancellation information.
 
-It includes:
+It can include:
 
 * Total payment attempts
 * Successful payments
 * Failed payments
 * Cancelled payments
 * Cancellation rate
+* Refund status
 * Completed refunds
 * Refund amount
 * Pending refunds
 
-This allows administrators to monitor payment performance and refund activity.
+This helps administrators monitor payment performance.
 
 ---
 
-# 22. User Growth
+# 28. User Growth
 
-The dashboard provides user registration growth based on date.
+User registration activity can be analyzed by date.
 
 The report displays:
 
 * Registration date
-* Number of new users
+* Number of newly registered users
 
-This helps administrators monitor customer growth.
+This helps administrators understand user growth.
 
 ---
 
-# 23. Custom Date Range Filtering
+# 29. Custom Date Range Filtering
 
-The Admin Dashboard supports custom date filtering.
+The Admin Dashboard supports custom date-range filtering.
 
 Administrators can select:
 
 * From Date
 * To Date
 
-The selected range is applied to the dashboard analytics.
+The selected date range is used for relevant analytics including:
 
-The filtering affects revenue, bookings, movie performance, theater performance, peak hours, payment statistics and other date-based reports.
+* Revenue
+* Bookings
+* Seats
+* Movie performance
+* Theater performance
+* Peak hours
+* Payment statistics
+* Refund statistics
+* User growth
+
+The dashboard uses database-level filtering and aggregation for these calculations.
 
 ---
 
-# 24. CSV Export
+# 30. CSV Export
 
-The dashboard provides a CSV export option.
+The Admin Dashboard supports CSV report export.
 
-Administrators can export dashboard information for offline analysis.
-
-The CSV report contains sections for:
+The exported information can contain sections for:
 
 * Summary
 * Booking trends
 * Movie performance
 * Theater performance
 * Peak booking hours
-* Payment and refund statistics
+* Payment statistics
+* Refund statistics
 * User growth
 
----
-
-# 25. Admin Authentication and Authorization
-
-The Admin Dashboard is protected using Django authentication and permission mechanisms.
-
-Only authorized administrators can access sensitive dashboard information.
-
-The permission system checks whether the current user is:
-
-* Authenticated
-* Staff/superuser
-* Or has the required dashboard permission
-
-Unauthorized users are prevented from accessing the dashboard.
+CSV export allows administrators to save analytical information for offline processing.
 
 ---
 
-# 26. Database Optimization and Indexing
+# 31. Admin Authentication and Authorization
 
-To improve dashboard performance, database indexes have been implemented on frequently filtered and queried fields.
+Sensitive dashboard information is protected using Django authentication and authorization mechanisms.
 
-### Booking Indexes
+Dashboard access is restricted to authorized users according to the application's permission checks.
+
+The system verifies authentication and administrator/staff access before displaying sensitive business analytics.
+
+---
+
+# 32. Database Design
+
+The application uses Django models to manage:
+
+* Movies
+* Genres
+* Languages
+* Cast members
+* Movie posters
+* Theaters
+* Shows
+* Users
+* Bookings
+* User activity
+* Reviews
+* Review reports
+* Payment transactions
+
+---
+
+# 33. Production Database
+
+The production deployment uses **PostgreSQL on Railway**.
+
+The current live database was successfully populated and verified with approximately:
+
+```text
+Movies:     49
+Shows:      25,213
+Theaters:   14
+Genres:     16
+Languages:  8
+Cast:       323
+```
+
+The production database also contains booking and payment transaction records created during live testing.
+
+---
+
+# 34. Database Indexing
+
+Database indexes have been implemented for frequently queried fields.
+
+Important indexes include:
+
+### Booking
 
 * `booked_at`
 * `(show, booked_at)`
 * `(user, booked_at)`
 
-### Show Indexes
+### Show
 
 * `(show_date, show_time)`
 * `(theater, show_date)`
 * `(movie, show_date)`
 
-### PaymentTransaction Indexes
+### PaymentTransaction
 
 * `(show, status, expires_at)`
 * `(status, created_at)`
 * `(show, created_at)`
 * `(refund_status, refunded_at)`
 
-Additional indexes are also present on frequently queried fields such as booking date, payment status, reservation expiry and show date.
+These indexes help improve filtering and reporting performance.
 
 ---
 
-# 27. ORM Performance Optimization
+# 35. ORM Performance Optimization
 
-The Admin Dashboard uses Django ORM aggregation instead of loading all booking records into Python memory.
+The Admin Dashboard uses Django ORM aggregation rather than loading all records into Python.
 
-The implementation uses operations such as:
+Operations used include:
 
 * `Count()`
 * `Sum()`
@@ -534,95 +782,130 @@ The implementation uses operations such as:
 * `TruncYear()`
 * `ExtractHour()`
 
-The database performs the aggregation calculations and returns only the required results.
-
-This avoids unnecessarily loading large numbers of individual booking objects into application memory.
+Database-side aggregation reduces unnecessary application memory usage and allows analytical queries to be processed efficiently.
 
 ---
 
-# 28. Large Dataset Performance
+# 36. Large Dataset Scalability
 
-The dashboard has been designed to work efficiently with large booking datasets, including 100,000 or more bookings.
+The Admin Dashboard has been designed with scalable query patterns.
 
-Performance improvements include:
+Performance considerations include:
 
-1. Database indexes reduce unnecessary table scans.
-2. Aggregations are performed by the database.
-3. Only required summary values are retrieved.
-4. Complete booking objects are not loaded unnecessarily.
-5. Composite indexes improve multi-field filtering.
-6. Date indexes improve custom date-range queries.
-7. Payment and refund indexes improve transaction reporting.
+1. Database indexing
+2. Database-level aggregation
+3. Date-based filtering
+4. Composite indexes
+5. Limited result retrieval
+6. Avoiding unnecessary object loading
+7. Efficient payment and booking filtering
 
-This architecture provides better scalability than processing all booking records in Python.
+These techniques provide a better foundation for larger booking datasets.
 
 ---
 
-# 29. Security
+# 37. Security
 
-Security features implemented in CineBook include:
+CineBook includes multiple security measures:
 
 * Django authentication
-* Login protection
-* Permission-based admin access
-* CSRF protection where applicable
-* Payment verification
+* Login-protected views
+* Administrator authorization
+* CSRF protection
+* Server-side validation
+* Payment signature verification
+* Payment amount verification
 * Duplicate booking protection
-* Server-side booking validation
-* Amount verification
-* Restricted dashboard access
+* Seat availability validation
+* Temporary reservation validation
+* Environment-based secret configuration
 
-Sensitive business analytics are accessible only to authorized administrators.
+Production credentials such as Razorpay keys, TMDB tokens, database URLs, and Redis URLs are configured through environment variables.
+
+No production secret is intended to be committed to GitHub.
 
 ---
 
-# 30. Admin Credentials
+# 38. Railway Deployment
 
-The following credentials are provided for project evaluation.
+CineBook is deployed on Railway.
 
-**Admin Username:** `tanishk233896`
-
-**Admin Password:** `tanishk@9090`
-
-**Admin URL:**
-`http://127.0.0.1:8000/admin/`
-
-**Admin Dashboard URL:**
-`http://127.0.0.1:8000/admin-dashboard/`
-
-
-# 31. Project Structure
-
-The main project structure is:
+## Production Components
 
 ```text
-cineBook_django_project/
+CineBook-Django
+PostgreSQL
+Redis
+```
 
+The application is connected to the GitHub repository and automatically deploys the production branch.
+
+## Production Web Server
+
+The application uses Gunicorn on the Railway Linux environment.
+
+## Production Celery Worker
+
+The Celery worker is started together with the Django application using:
+
+```bash
+python start.py
+```
+
+The startup script launches:
+
+* Django/Gunicorn web server
+* Celery worker
+
+This setup was used because the Railway Free plan did not allow creation of another service.
+
+---
+
+# 39. Live Project
+
+## Live Website
+
+https://cinebook-django-production.up.railway.app/
+
+## GitHub Repository
+
+https://github.com/tanishkgupta181/CineBook-Django
+
+---
+
+# 40. Project Structure
+
+```text
+CineBook-Django/
+
+├── admin_dashboard/
 │
 ├── bookmyshow/
 │   ├── settings.py
 │   ├── urls.py
 │   ├── celery.py
-│   └── ...
+│   └── wsgi.py
 │
 ├── movies/
 │   ├── models.py
 │   ├── views.py
 │   ├── urls.py
-│   ├── admin_dashboard.py
 │   ├── tasks.py
-│   ├── management/
 │   ├── migrations/
-│   └── ...
+│   └── management/
 │
 ├── static/
 │   ├── css/
 │   └── images/
 │
+├── staticfiles/
+│
 ├── templates/
 │
+├── media/
+│
 ├── manage.py
-├── db.sqlite3
+├── start.py
 ├── requirements.txt
 ├── README.md
 └── REPORT.md
@@ -630,69 +913,246 @@ cineBook_django_project/
 
 ---
 
-# 32. Testing and Verification
+# 41. Local Development
 
-The following Django commands were used to verify the project:
+Create a virtual environment:
+
+## Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+## macOS/Linux
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run migrations:
+
+```bash
+python manage.py migrate
+```
+
+Create a superuser:
+
+```bash
+python manage.py createsuperuser
+```
+
+Start Django:
+
+```bash
+python manage.py runserver
+```
+
+The local website can then be accessed at:
 
 ```text
+http://127.0.0.1:8000/
+```
+
+---
+
+# 42. Local Celery
+
+For local background task processing:
+
+```bash
+python -m celery -A bookmyshow.celery:app worker --loglevel=info --pool=solo
+```
+
+Redis must be running locally for the Celery worker.
+
+---
+
+# 43. Environment Variables
+
+The following environment variables are used by the project where required:
+
+```text
+SECRET_KEY
+DEBUG
+DATABASE_URL
+TMDB_API_KEY
+RAZORPAY_KEY_ID
+RAZORPAY_KEY_SECRET
+REDIS_URL
+```
+
+Production values are configured in Railway rather than stored in the GitHub repository.
+
+---
+
+# 44. Testing and Verification
+
+The following Django checks were performed:
+
+```bash
 python manage.py check
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
 ```
 
-The Django system check completed successfully without reported issues.
+The final Django system check returned:
 
-The Admin Dashboard was tested for:
-
-* Revenue calculation
-* Booking trends
-* Movie statistics
-* Theater performance
-* Occupancy calculation
-* Peak hours
-* Cancellation statistics
-* Refund statistics
-* User growth
-* Date filtering
-* CSV export
-* Admin authorization
+```text
+System check identified no issues (0 silenced).
+```
 
 ---
 
-# 33. Sample Admin Dashboard Result
+# 45. Production Booking Test
 
-For the tested period from **01/09/2026 to 08/09/2026**, the dashboard displayed:
+A complete live booking test was successfully performed.
 
-* Selected Revenue: ₹8,950
-* Total Bookings: 37
-* Seats Booked: 39
-* New Users: 5
-* Daily Revenue: ₹1,600
-* Weekly Revenue: ₹2,000
-* Monthly Revenue: ₹8,950
-* Yearly Revenue: ₹8,950
+The tested flow was:
 
-The dashboard also successfully displayed booking trends, movie performance, theater performance, peak booking hours, cancellation/refund statistics and user growth.
+```text
+Movie Selection
+      ↓
+Show Selection
+      ↓
+Seat Selection
+      ↓
+Razorpay Order
+      ↓
+Payment
+      ↓
+Payment Verification
+      ↓
+Booking Confirmation
+      ↓
+Ticket Generation
+      ↓
+Ticket Download
+```
+
+The live booking test successfully confirmed:
+
+* Movie booking
+* Theater selection
+* Screen selection
+* Seat selection
+* Razorpay payment
+* Payment verification
+* Booking creation
+* Booking ID generation
+* Payment reference generation
+* Ticket PDF generation
+* Ticket download
 
 ---
 
-# 34. Conclusion
+# 46. Production Payment Verification
 
-CineBook successfully implements an online movie booking platform using Python and Django.
+The live payment integration was tested successfully with Razorpay.
 
-The project provides complete movie discovery, show management, seat booking, payment processing, reviews and ratings, ticket management and administrative analytics.
+The application successfully performed:
 
-The Admin Dashboard satisfies the Task 6 requirements by providing business insights, custom date filtering, CSV export, authentication and permission-based access.
+1. Razorpay order creation
+2. Payment checkout
+3. Payment verification
+4. Payment transaction creation
+5. Booking creation
+6. Ticket generation
+7. Ticket download
 
-Database indexing and Django ORM aggregation have been used to improve performance and scalability for large booking datasets.
-
-The project is therefore suitable for final internship project evaluation and submission.
+The production database was also verified for successful payment records.
 
 ---
 
-## Project Status
+# 47. Redis and Celery Verification
 
-**CineBook – Internship Final Project: COMPLETED**
+Redis connectivity was tested successfully in the Railway environment.
 
-**Task 6 – Admin Dashboard: COMPLETED**
+Celery was verified with:
+
+```text
+Connected to redis://...
+celery@... ready.
+```
+
+The task:
+
+```text
+movies.tasks.generate_ticket_and_send_email
+```
+
+was successfully registered by the Celery application.
+
+This confirms that the background processing infrastructure is configured for production.
+
+---
+
+# 48. Final Project Status
+
+The CineBook Internship Final Project has successfully implemented the major movie booking, payment, ticketing, review, API, and administrative requirements.
+
+The final implemented system includes:
+
+```text
+Django                         COMPLETED
+PostgreSQL                     COMPLETED
+Movie Management               COMPLETED
+Movie Discovery                COMPLETED
+Theater Management             COMPLETED
+Show Management                COMPLETED
+Seat Selection                 COMPLETED
+Temporary Seat Reservation     COMPLETED
+Razorpay Payment               COMPLETED
+Payment Verification           COMPLETED
+Booking System                 COMPLETED
+Ticket Generation              COMPLETED
+Ticket Download                COMPLETED
+Redis                          COMPLETED
+Celery                         COMPLETED
+Reviews and Ratings            COMPLETED
+Review Reporting               COMPLETED
+Movie Discovery API            COMPLETED
+Admin Dashboard                COMPLETED
+Revenue Analytics              COMPLETED
+Booking Analytics              COMPLETED
+CSV Export                     COMPLETED
+Railway Deployment             COMPLETED
+```
+
+---
+
+# 49. Conclusion
+
+CineBook successfully implements a complete online movie booking and management platform using Python and Django.
+
+The system provides:
+
+* Movie discovery
+* Movie details
+* Show management
+* Theater management
+* Seat selection
+* Temporary reservations
+* Razorpay payment
+* Payment verification
+* Booking confirmation
+* Ticket generation
+* Ticket download
+* Reviews and ratings
+* Movie discovery API
+* Background processing
+* Administrative analytics
+
+The production deployment uses PostgreSQL for data storage, Redis for background task infrastructure, Celery for asynchronous processing, Razorpay for online payments, and Railway for cloud deployment.
+
+The project was tested using Django system checks and a complete live movie booking flow, including successful payment and ticket download.
+
+**CineBook - Internship Final Project: COMPLETED**
