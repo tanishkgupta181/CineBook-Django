@@ -1,4 +1,5 @@
 
+
 import uuid
 import json
 from decimal import Decimal
@@ -403,7 +404,6 @@ def movie_detail(request, pk):
             "shows":
                 shows,
 
-            # NEW / IMPORTANT
             "today":
                 today,
 
@@ -1103,13 +1103,16 @@ def create_razorpay_order(request, show_id):
 
         with transaction.atomic():
 
+            # IMPORTANT:
+            # Do not use select_related("movie", "theater")
+            # together with select_for_update() here.
+            # PostgreSQL can reject the generated OUTER JOIN
+            # with:
+            # "FOR UPDATE cannot be applied to the nullable side
+            # of an outer join."
             locked_show = (
                 Show.objects
                 .select_for_update()
-                .select_related(
-                    "movie",
-                    "theater"
-                )
                 .get(id=show_id)
             )
 
@@ -1121,8 +1124,12 @@ def create_razorpay_order(request, show_id):
 
             bookings = (
                 Booking.objects
-                .filter(show=locked_show)
-                .exclude(seat_numbers="")
+                .filter(
+                    show=locked_show
+                )
+                .exclude(
+                    seat_numbers=""
+                )
             )
 
             for booking in bookings:
@@ -1145,7 +1152,9 @@ def create_razorpay_order(request, show_id):
                     status=PaymentTransaction.STATUS_PENDING,
                     expires_at__gt=now,
                 )
-                .exclude(seat_numbers="")
+                .exclude(
+                    seat_numbers=""
+                )
             )
 
             for payment in pending_transactions:
@@ -1764,6 +1773,7 @@ def verify_razorpay_payment(request):
         )
 
         locked_transaction.razorpay_payment_id = payment_id
+
         locked_transaction.booking = booking
 
         locked_transaction.save(
@@ -2041,13 +2051,12 @@ def retry_payment(request, transaction_id):
 
         with transaction.atomic():
 
+            # IMPORTANT:
+            # Same PostgreSQL FOR UPDATE / OUTER JOIN fix
+            # as create_razorpay_order().
             locked_show = (
                 Show.objects
                 .select_for_update()
-                .select_related(
-                    "movie",
-                    "theater"
-                )
                 .get(
                     id=old_transaction.show_id
                 )
