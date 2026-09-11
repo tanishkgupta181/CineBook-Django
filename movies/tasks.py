@@ -1,13 +1,14 @@
+import base64
 from io import BytesIO
 from urllib.request import Request, urlopen
 
+import requests
 import qrcode
 
 from celery import shared_task
 
 from django.conf import settings
 from django.core.files.base import ContentFile
-from django.core.mail import EmailMessage
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -26,9 +27,13 @@ def get_movie_poster(movie):
     poster_url = getattr(movie, "poster_url", None)
 
     if not poster_url:
+        print("No movie poster URL found.")
         return None
 
     try:
+
+        print("Downloading movie poster...")
+
         request = Request(
             poster_url,
             headers={
@@ -49,9 +54,17 @@ def get_movie_poster(movie):
 
         poster_buffer.seek(0)
 
+        print("Movie poster downloaded successfully.")
+
         return poster_buffer
 
-    except Exception:
+    except Exception as exc:
+
+        print(
+            "Movie poster download failed:",
+            repr(exc)
+        )
+
         return None
 
 
@@ -67,22 +80,43 @@ def get_movie_poster(movie):
 )
 def generate_ticket_and_send_email(self, booking_id):
 
+    print("=" * 60)
+    print("CINEBOOK EMAIL TASK STARTED")
+    print("BOOKING ID:", booking_id)
+    print("=" * 60)
+
     # ==========================================
     # GET BOOKING
     # ==========================================
 
-    booking = (
-        Booking.objects
-        .select_related(
-            "user",
-            "show__movie",
-            "show__theater"
+    try:
+
+        booking = (
+            Booking.objects
+            .select_related(
+                "user",
+                "show__movie",
+                "show__theater"
+            )
+            .get(id=booking_id)
         )
-        .get(id=booking_id)
-    )
+
+        print("Booking found successfully.")
+
+    except Exception as exc:
+
+        print(
+            "BOOKING FETCH ERROR:",
+            repr(exc)
+        )
+
+        raise
 
     movie = booking.show.movie
     theater = booking.show.theater
+
+    print("Movie:", movie.title)
+    print("Email:", booking.email)
 
     # ==========================================
     # THEATER
@@ -107,6 +141,8 @@ def generate_ticket_and_send_email(self, booking_id):
     # QR CODE
     # ==========================================
 
+    print("Generating QR code...")
+
     qr_data = (
         "CineBook Ticket Verification\n"
         f"Booking ID: {booking.booking_id}\n"
@@ -126,6 +162,8 @@ def generate_ticket_and_send_email(self, booking_id):
 
     qr_buffer.seek(0)
 
+    print("QR code generated successfully.")
+
     # ==========================================
     # MOVIE POSTER
     # ==========================================
@@ -135,6 +173,8 @@ def generate_ticket_and_send_email(self, booking_id):
     # ==========================================
     # PDF
     # ==========================================
+
+    print("Creating PDF ticket...")
 
     pdf_buffer = BytesIO()
 
@@ -364,9 +404,12 @@ def generate_ticket_and_send_email(self, booking_id):
                 mask="auto"
             )
 
-        except Exception:
+        except Exception as exc:
 
-            pass
+            print(
+                "Poster drawing failed:",
+                repr(exc)
+            )
 
     else:
 
@@ -609,12 +652,7 @@ def generate_ticket_and_send_email(self, booking_id):
 
     # ==========================================
     # TICKET DETAILS
-    # ==========================================
-    #
-    # IMPORTANT:
-    # NO MIDDLE RED DIVIDER IS DRAWN HERE.
-    # The old divider code has been completely removed.
-    #
+    # =========================================
 
     details_y = height - 402
 
@@ -1015,7 +1053,7 @@ def generate_ticket_and_send_email(self, booking_id):
 
     # ==========================================
     # SAVE PDF
-    # ==========================================
+    print("Saving PDF...")
 
     pdf.save()
 
@@ -1030,6 +1068,8 @@ def generate_ticket_and_send_email(self, booking_id):
         f"{booking.booking_id}.pdf"
     )
 
+    print("Saving ticket file:", filename)
+
     booking.ticket_file.save(
         filename,
         ContentFile(
@@ -1037,6 +1077,8 @@ def generate_ticket_and_send_email(self, booking_id):
         ),
         save=True
     )
+
+    print("Ticket PDF saved successfully.")
 
     # ==========================================
     # EMAIL VALIDATION
@@ -1048,90 +1090,392 @@ def generate_ticket_and_send_email(self, booking_id):
             "Booking email is missing."
         )
 
-    # ==========================================
-    # EMAIL BODY
-    # ==========================================
-
-    email_body = f"""
-Hello {booking.customer_name or 'Customer'},
-
-Your CineBook booking has been confirmed successfully.
-
-Movie:
-{movie.title}
-
-Booking ID:
-{booking.booking_id}
-
-Theater:
-{theater_name}
-
-City:
-{theater_city}
-
-Screen:
-{booking.screen}
-
-Date:
-{booking.show.show_date or 'N/A'}
-
-Time:
-{booking.show.show_time}
-
-Seats:
-{booking.seat_numbers}
-
-Payment Reference:
-{booking.payment_reference}
-
-Total Amount:
-Rs. {booking.total_amount}
-
-Your CineBook movie ticket is attached with this email.
-
-Thank you for using CineBook.
-Enjoy your movie!
-"""
+    print("Recipient email:", booking.email)
 
     # ==========================================
-    # EMAIL
+    # RESEND API KEY
     # ==========================================
 
-    email = EmailMessage(
-        subject=(
-            f"CineBook Ticket Confirmation - "
-            f"{movie.title}"
-        ),
-        body=email_body,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[booking.email],
+    resend_api_key = getattr(
+        settings,
+        "RESEND_API_KEY",
+        None
     )
 
+    if not resend_api_key:
+
+        raise ValueError(
+            "RESEND_API_KEY is not configured."
+        )
+
+    print("RESEND_API_KEY found.")
+
     # ==========================================
-    # ATTACH PDF
+    # READ PDF FOR EMAIL ATTACHMENT
     # ==========================================
+
+    print("Reading PDF attachment...")
 
     booking.ticket_file.open("rb")
 
-    email.attach(
-        filename,
-        booking.ticket_file.read(),
-        "application/pdf"
-    )
+    pdf_data = booking.ticket_file.read()
 
     booking.ticket_file.close()
 
+    print(
+        "PDF attachment size:",
+        len(pdf_data),
+        "bytes"
+    )
+
+    pdf_base64 = base64.b64encode(
+        pdf_data
+    ).decode("utf-8")
+
+    print("PDF converted to Base64.")
+
     # ==========================================
-    # SEND EMAIL
+    # EMAIL HTML
     # ==========================================
 
-    email.send(
-        fail_silently=False
-    )
+    email_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>CineBook Ticket Confirmation</title>
+    </head>
+
+    <body style="
+        margin:0;
+        padding:0;
+        background:#f4f4f4;
+        font-family:Arial,Helvetica,sans-serif;
+    ">
+
+        <div style="
+            max-width:600px;
+            margin:30px auto;
+            background:#ffffff;
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 4px 20px rgba(0,0,0,0.10);
+        ">
+
+            <div style="
+                background:#090909;
+                padding:25px 30px;
+                border-top:5px solid #E50914;
+            ">
+
+                <h1 style="
+                    margin:0;
+                    color:#ffffff;
+                    font-size:30px;
+                ">
+                    Cine<span style="color:#E50914;">Book</span>
+                </h1>
+
+                <p style="
+                    margin:5px 0 0;
+                    color:#aaaaaa;
+                    font-size:12px;
+                ">
+                    MOVIE TICKET BOOKING
+                </p>
+
+            </div>
+
+            <div style="padding:30px;">
+
+                <h2 style="
+                    margin-top:0;
+                    color:#19A463;
+                ">
+                    ✓ Booking Confirmed
+                </h2>
+
+                <p>
+                    Hello
+                    <strong>
+                        {booking.customer_name or 'Customer'}
+                    </strong>,
+                </p>
+
+                <p>
+                    Your CineBook movie booking has been
+                    confirmed successfully.
+                </p>
+
+                <p>
+                    Your movie ticket is attached to this email.
+                </p>
+
+                <hr style="
+                    border:0;
+                    border-top:1px solid #eeeeee;
+                    margin:25px 0;
+                ">
+
+                <h3 style="color:#E50914;">
+                    Booking Details
+                </h3>
+
+                <table style="
+                    width:100%;
+                    border-collapse:collapse;
+                    font-size:14px;
+                ">
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            Movie
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                            font-weight:bold;
+                        ">
+                            {movie.title}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            Booking ID
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                            font-weight:bold;
+                        ">
+                            {booking.booking_id}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            Theater
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                        ">
+                            {theater_name}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            City
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                        ">
+                            {theater_city}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            Screen
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                        ">
+                            {booking.screen}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            Date
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                        ">
+                            {booking.show.show_date or 'N/A'}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            Time
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                        ">
+                            {booking.show.show_time}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            Seats
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                            font-weight:bold;
+                        ">
+                            {booking.seat_numbers}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:8px 0;color:#777;">
+                            Payment Reference
+                        </td>
+
+                        <td style="
+                            padding:8px 0;
+                            text-align:right;
+                        ">
+                            {booking.payment_reference}
+                        </td>
+                    </tr>
+
+                </table>
+
+                <div style="
+                    margin-top:25px;
+                    padding:18px;
+                    background:#E50914;
+                    border-radius:8px;
+                    color:#ffffff;
+                ">
+
+                    <span style="
+                        font-size:13px;
+                    ">
+                        TOTAL AMOUNT
+                    </span>
+
+                    <div style="
+                        font-size:24px;
+                        font-weight:bold;
+                        margin-top:5px;
+                    ">
+                        Rs. {booking.total_amount}
+                    </div>
+
+                </div>
+
+                <p style="
+                    margin-top:30px;
+                    color:#555555;
+                ">
+                    Thank you for using
+                    <strong>CineBook</strong>.
+                </p>
+
+                <p style="
+                    color:#555555;
+                ">
+                    Enjoy your movie! 🍿
+                </p>
+
+            </div>
+
+            <div style="
+                background:#090909;
+                padding:18px 30px;
+                text-align:center;
+                color:#aaaaaa;
+                font-size:12px;
+            ">
+                CineBook • Movie Ticket Booking
+            </div>
+
+        </div>
+
+    </body>
+    </html>
+    """
+
+    # ==========================================
+    # SEND EMAIL THROUGH RESEND HTTPS API
+    # ==========================================
+
+    print("=" * 60)
+    print("SENDING EMAIL THROUGH RESEND HTTPS API")
+    print("RECIPIENT:", booking.email)
+    print("=" * 60)
+
+    payload = {
+        "from": "CineBook <onboarding@resend.dev>",
+        "to": [
+            booking.email
+        ],
+        "subject": (
+            f"CineBook Ticket Confirmation - "
+            f"{movie.title}"
+        ),
+        "html": email_html,
+        "attachments": [
+            {
+                "filename": filename,
+                "content": pdf_base64,
+            }
+        ],
+    }
+
+    try:
+
+        response = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": (
+                    f"Bearer {resend_api_key}"
+                ),
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=30,
+        )
+
+        print(
+            "RESEND HTTP STATUS:",
+            response.status_code
+        )
+
+        print(
+            "RESEND RESPONSE:",
+            response.text[:500]
+        )
+
+        response.raise_for_status()
+
+    except requests.RequestException as exc:
+
+        print(
+            "RESEND EMAIL ERROR:",
+            repr(exc)
+        )
+
+        raise
 
     # ==========================================
     # SUCCESS
     # ==========================================
+
+    print("=" * 60)
+    print("CINEBOOK EMAIL TASK COMPLETED SUCCESSFULLY")
+    print("BOOKING ID:", booking.booking_id)
+    print("EMAIL:", booking.email)
+    print("=" * 60)
 
     return {
         "success": True,
@@ -1139,4 +1483,5 @@ Enjoy your movie!
             booking.booking_id
         ),
         "email": booking.email,
+        "email_response": response.text,
     }

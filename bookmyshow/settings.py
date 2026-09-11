@@ -25,7 +25,9 @@ SECRET_KEY = os.getenv(
     "django-insecure-change-this-secret-key"
 )
 
-TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+TMDB_API_KEY = os.getenv(
+    "TMDB_API_KEY"
+)
 
 DEBUG = os.getenv(
     "DEBUG",
@@ -274,7 +276,10 @@ STATIC_ROOT = (
 )
 
 
-# WhiteNoise compressed static files
+# ==========================================
+# WHITENOISE
+# ==========================================
+
 STORAGES = {
 
     "default": {
@@ -311,30 +316,25 @@ DEFAULT_AUTO_FIELD = (
 
 
 # ==========================================
-# EMAIL CONFIGURATION
+# EMAIL CONFIGURATION - RESEND
 # ==========================================
 
-EMAIL_BACKEND = (
-    "django.core.mail.backends.smtp.EmailBackend"
+# Resend HTTPS API key
+# Railway provides this through the
+# RESEND_API_KEY service variable.
+
+RESEND_API_KEY = os.getenv(
+    "RESEND_API_KEY"
 )
 
-EMAIL_HOST = "smtp.gmail.com"
+# Default sender used by the application.
+# The actual sending in tasks.py is done
+# through the Resend HTTPS API.
 
-EMAIL_PORT = 587
-
-EMAIL_USE_TLS = True
-
-EMAIL_HOST_USER = os.getenv(
-    "EMAIL_HOST_USER",
-    "YOUR_EMAIL@gmail.com"
+DEFAULT_FROM_EMAIL = os.getenv(
+    "DEFAULT_FROM_EMAIL",
+    "CineBook <onboarding@resend.dev>"
 )
-
-EMAIL_HOST_PASSWORD = os.getenv(
-    "EMAIL_HOST_PASSWORD",
-    "YOUR_GMAIL_APP_PASSWORD"
-)
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # ==========================================
@@ -391,4 +391,3 @@ LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Login session expires when browser is closed
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
